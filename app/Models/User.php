@@ -50,4 +50,46 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // Followers (yang mengikuti user ini)
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id')
+                    ->withTimestamps();
+    }
+
+    // Following (yang diikuti oleh user ini)
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id')
+                    ->withTimestamps();
+    }
+
+    // Helper methods
+    public function isFollowing($userId)
+    {
+        return $this->following()->where('following_id', $userId)->exists();
+    }
+
+    public function follow($userId)
+    {
+        if (!$this->isFollowing($userId) && $this->id != $userId) {
+            return $this->following()->attach($userId);
+        }
+    }
+
+    public function unfollow($userId)
+    {
+        return $this->following()->detach($userId);
+    }
+
+    public function followersCount()
+    {
+        return $this->followers()->count();
+    }
+
+    public function followingCount()
+    {
+        return $this->following()->count();
+    }
 }

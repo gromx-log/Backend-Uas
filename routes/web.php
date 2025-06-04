@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\FollowsController;
 
 Route::get('/', function () {
     return view('home.home');
@@ -23,6 +24,10 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function() {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    Route::post('/users/{user}/follow', [FollowController::class, 'follow'])->name('users.follow');
+    Route::delete('/users/{user}/follow', [FollowController::class, 'unfollow'])->name('users.unfollow');
+    Route::get('/users/{user}/followers', [FollowController::class, 'followers'])->name('users.followers');
+    Route::get('/users/{user}/following', [FollowController::class, 'following'])->name('users.following');
 });
 
 
