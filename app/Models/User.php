@@ -12,6 +12,10 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $primaryKey = 'userId';
+    protected $keyType = 'int'; 
+    public $incrementing = true;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -49,5 +53,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'user_id', 'userId');
     }
 }

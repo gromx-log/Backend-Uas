@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reposts', function (Blueprint $table) {
-            $table->foreignId('userId') 
-                  ->constrained('users') 
+            $table->foreignId('userId')
+                  ->constrained('users', 'userId') 
                   ->onDelete('cascade'); 
-            $table->foreignId('postId') 
+            $table->foreignId('postId')
                   ->constrained('posts', 'postId') 
                   ->onDelete('cascade'); 
             $table->timestamp('created_at')->useCurrent(); 

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class PostController extends Controller
 {
@@ -12,7 +14,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Post::with('user')->latest()->get();
+        return view('home.post', compact('posts'));
     }
 
     /**
@@ -28,23 +31,20 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-            // cek input
-            $request->validate([
-                'content' => 'required|string|max:280',
-                'parent_post_id' => 'nullable|exists:posts,postId', // untuk reply
+        // cek input
+        $request->validate([
+            'content' => 'required|string|max:280',
+            'parent_post_id' => 'nullable|exists:posts,postId', // untuk reply
             ]);
     
-            // simpan post baru
-            $post = Post::create([
-                'userId' => Auth::id(), 
-                'content' => $request->content,
-                'parent_post_id' => $request->parent_post_id,
-            ]);
-    
-            return response()->json([
-                'message' => 'Post berhasil dibuat!',
-                'post' => $post
-            ], 201);
+        // simpan post baru
+        $post = Post::create([
+            'userId' => Auth::id(), 
+            'content' => $request->content,
+            'parent_post_id' => $request->parent_post_id,
+        ]);
+
+        return redirect()->route('posts.index')->with('success', 'Postingan berhasil dibuat!');
     }
 
     /**
@@ -76,6 +76,12 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        if ($post->userId !== Auth::id()) {
+            return redirect()->route('posts.index')->with('error', 'Anda tidak diizinkan menghapus postingan ini.');
+        }
+    
+        $post->delete();
+    
+        return redirect()->route('posts.index')->with('success', 'Post berhasil dihapus!');
     }
 }

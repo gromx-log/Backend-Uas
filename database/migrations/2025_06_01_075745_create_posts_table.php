@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id('postId'); 
-            $table->foreignId('user_id')
-                  ->constrained('users') 
+            $table->foreignId('userId')
+                  ->constrained('users', 'userId') 
                   ->onDelete('cascade'); 
             $table->string('content', 280);
             $table->integer('likeCount')->default(0);
