@@ -64,6 +64,7 @@
             </div>
         </div>
 
+
         <!-- Main Content -->
         <div class="flex-1 ml-64 border-x border-gray-800">
             <!-- Header -->

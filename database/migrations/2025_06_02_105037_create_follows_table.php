@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('follows', function (Blueprint $table) {
             $table->foreignId('follower_id')
-                  ->constrained('users')
+                  ->constrained('users', 'userId') 
                   ->onDelete('cascade'); 
             $table->foreignId('following_id')
-                  ->constrained('users') 
+                  ->constrained('users', 'userId') 
                   ->onDelete('cascade'); 
             $table->timestamp('created_at')->useCurrent(); 
             $table->primary(['follower_id', 'following_id']); 

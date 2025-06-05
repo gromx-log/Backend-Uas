@@ -12,6 +12,10 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $primaryKey = 'userId';
+    protected $keyType = 'int'; 
+    public $incrementing = true;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -51,13 +55,15 @@ class User extends Authenticatable
         ];
     }
 
-    // Followers (yang mengikuti user ini)
-    public function followers()
+    public function posts()
     {
-        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id')
-                    ->withTimestamps();
+        return $this->hasMany(Post::class, 'user_id', 'userId');
     }
-
+        public function followers()
+        {
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id');
+                    ->withTimestamps();
+        }
     // Following (yang diikuti oleh user ini)
     public function following()
     {

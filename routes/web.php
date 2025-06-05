@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function () {
     
     // Posts
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 
     // Follows
     Route::post('/users/{user}/follow', [FollowController::class, 'follow'])->name('users.follow');

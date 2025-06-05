@@ -3,15 +3,28 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo; 
 
 class Post extends Model
 {
-    protected $primaryKey = 'postId'; // Karena kamu pakai postId, bukan id
-    public $timestamps = false; // Karena kamu hanya pakai created_at manual
+    protected $primaryKey = 'postId'; 
+    public $timestamps = false; 
 
     protected $fillable = [
-        'userId',
+        'userId', 
         'content',
         'parent_post_id',
     ];
+    
+    protected $casts = [
+        'created_at' => 'datetime', // <-- TAMBAHKAN BARIS INI
+    ];
+    
+    /**
+     * Get the user that owns the post.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'userId', 'userId');
+    }
 }
