@@ -11,23 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
-            $table->id('postId'); 
+        Schema::create('bookmarks', function (Blueprint $table) {
             $table->foreignId('userId')
                   ->constrained('users', 'userId') 
                   ->onDelete('cascade'); 
-            $table->string('content', 280);
-            $table->integer('likeCount')->default(0);
-            $table->integer('repostCount')->default(0);
-            $table->integer('bookmarkCount')->default(0);
-            $table->integer('replyCount')->default(0);
-            $table->timestamp('created_at')->useCurrent(); 
-
-            // parent_post_id untuk reply 
-            $table->foreignId('parent_post_id')
-                  ->nullable() 
+            $table->foreignId('postId')
                   ->constrained('posts', 'postId') 
                   ->onDelete('cascade'); 
+            $table->timestamp('created_at')->useCurrent(); 
+            $table->primary(['userId', 'postId']); 
         });
     }
 
@@ -36,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('bookmarks');
     }
 };

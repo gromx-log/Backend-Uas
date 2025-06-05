@@ -24,6 +24,8 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function() {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 
     //Profile edit & update
     Route::get('/profile/edit', [UserController::class, 'edit'])->name('profile.edit');
@@ -31,7 +33,6 @@ Route::middleware('auth')->group(function() {
 
     //Profile show (by username)
     Route::get('/profile/{username}', [UserController::class, 'show'])->name('profile.show');
-
 });
 
 
