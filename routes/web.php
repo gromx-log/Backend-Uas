@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\FollowController;
+use App\Http\Controllers\FollowsController;
 use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
@@ -33,10 +33,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 
     // Follows
-    Route::post('/users/{user}/follow', [FollowController::class, 'follow'])->name('users.follow');
-    Route::delete('/users/{user}/follow', [FollowController::class, 'unfollow'])->name('users.unfollow');
-    Route::get('/users/{user}/followers', [FollowController::class, 'followers'])->name('users.followers');
-    Route::get('/users/{user}/following', [FollowController::class, 'following'])->name('users.following');
+    Route::post('/users/{user}/follow', [FollowsController::class, 'follow'])->name('users.follow');
+Route::delete('/users/{user}/follow', [FollowsController::class, 'unfollow'])->name('users.unfollow');
+Route::get('/users/{user}/followers', [FollowsController::class, 'followers'])->name('users.followers');
+Route::get('/users/{user}/following', [FollowsController::class, 'following'])->name('users.following');
+
 
     // Profile edit & update
     Route::get('/profile/edit', [UserController::class, 'edit'])->name('profile.edit');
@@ -44,4 +45,5 @@ Route::middleware('auth')->group(function () {
 
     // Profile show (by username)
     Route::get('/profile/{username}', [UserController::class, 'show'])->name('profile.show');
+
 });

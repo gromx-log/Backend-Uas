@@ -13,8 +13,10 @@ class UserController extends Controller
     $user = User::where('username', $username)
         ->withCount(['followers', 'following']) // opsional kalau ada relasi followers
         ->firstOrFail();
+        
+    $isFollowing = auth()->check() && auth()->user()->isFollowing($user->userId);
 
-    return view('profile.show', compact('user'));
+    return view('profile.show', compact('user', 'isFollowing'));
     }
 
     public function edit()
