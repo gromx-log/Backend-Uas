@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('home.home');
@@ -23,7 +24,19 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function() {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+
+    //Profile edit & update
+    Route::get('/profile/edit', [UserController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [UserController::class, 'update'])->name('profile.update');
+
+    //Profile show (by username)
+    Route::get('/profile/{username}', [UserController::class, 'show'])->name('profile.show');
+
 });
+
+
+   
+
 
 
 
