@@ -8,9 +8,9 @@ use App\Models\User; // Pastikan model User sudah ada
 
 class UserController extends Controller
 {
-    public function show($username)
+    public function show($userHandle)
     {
-    $user = User::where('username', $username)
+    $user = User::where('userHandle', $userHandle)
         ->withCount(['followers', 'following']) // opsional kalau ada relasi followers
         ->firstOrFail();
         
@@ -36,6 +36,6 @@ class UserController extends Controller
 
     $user->update($request->only('username', 'display_name', 'bio'));
 
-    return redirect()->route('profile.show', $user->username)->with('success', 'Profile updated!');
+    return redirect()->route('profile.show', $user->userHandle)->with('success', 'Profile updated!');
     }
 }
