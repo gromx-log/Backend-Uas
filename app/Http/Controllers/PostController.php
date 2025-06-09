@@ -43,8 +43,8 @@ class PostController extends Controller
             'content' => $request->content,
             'parent_post_id' => $request->parent_post_id,
         ]);
-
-        return redirect()->route('posts.index')->with('success', 'Postingan berhasil dibuat!');
+        
+        return redirect()->route('home')->with('success', 'Postingan berhasil dibuat!');
     }
 
     /**
@@ -81,7 +81,7 @@ class PostController extends Controller
         }
     
         $post->delete();
-    
-        return redirect()->route('posts.index')->with('success', 'Post berhasil dihapus!');
+        
+        return redirect()->route('home')->with('success', 'Post berhasil dihapus!');
     }
 }

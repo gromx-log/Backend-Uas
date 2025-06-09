@@ -19,7 +19,7 @@
                 
                 <!-- Navigation Menu -->
                 <nav class="space-y-2">
-                    <a href="#" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
+                    <a href="{{ route('home') }}" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
                         <i class="fas fa-home text-xl"></i>
                         <span class="text-xl">Home</span>
                     </a>
@@ -39,17 +39,19 @@
                         <i class="fas fa-bookmark text-xl"></i>
                         <span class="text-xl">Bookmarks</span>
                     </a>
-                    <a href="#" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
+                    <a href="{{ route('profile.show', $user->userHandle) }}" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
                         <i class="fas fa-user text-xl"></i>
                         <span class="text-xl">Profile</span>
                     </a>
                 </nav>
                 
                 <!-- Tweet Button -->
-                <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full w-full transition-colors">
-                    Post
-                </button>
-                
+                <form action="{{ route('posts.index') }}" method="GET">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full w-full transition-colors">
+                        Post
+                    </button>
+                </form>
+
                 <!-- User Profile Section -->
                 <div class="mt-auto pt-4">
                     <div class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 cursor-pointer">
@@ -66,17 +68,44 @@
 
 
         <!-- Main Content -->
-        <div class="flex-1 ml-64 border-x border-gray-800">
-            <!-- Header -->
-            <div class="sticky top-0 bg-black bg-opacity-80 backdrop-blur p-4 border-b border-gray-800">
-                <h1 class="text-xl font-bold">Home</h1>
+            <div class="flex-1 ml-64 border-x border-gray-800">
+                <!-- Header -->
+                <div class="sticky top-0 bg-black bg-opacity-80 backdrop-blur p-4 border-b border-gray-800">
+                    <h1 class="text-xl font-bold">Home</h1>
+                </div>
+
+                <!-- Success Message -->
+                @if(session('success'))
+                    <div class="bg-green-700 bg-opacity-80 text-green-200 p-3 rounded mb-4 mx-4">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                
+                <!-- Timeline/Feed -->
+                <div class="p-4 space-y-6">
+                    @forelse($posts as $post)
+                        <div class="bg-gray-900 p-4 rounded-lg shadow-md">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="text-sm text-gray-400">
+                                    <strong class="text-white">{{ $post->user->username ?? 'Unknown' }}</strong>
+                                    <span class="ml-2">{{ $post->created_at->format('Y-m-d H:i') }}</span>
+                                </div>
+                                @if(auth()->id() === $post->userId)
+                                    <form method="POST" action="{{ route('posts.destroy', $post->postId) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" onclick="return confirm('Delete this post?')" class="text-red-500 hover:underline text-sm">Delete</button>
+                                    </form>
+                                @endif
+                            </div>
+                            <p class="text-white text-base">{{ $post->content }}</p>
+                        </div>
+                    @empty
+                        <p class="text-center text-gray-500">No posts found.</p>
+                    @endforelse
+                </div>
             </div>
-            
-            <!-- Tweet Compose -->
-            <!-- Sudah disediakan sebelumnya -->
-            <!-- Timeline/Feed -->
-            <!-- Sudah disediakan sebelumnya -->
-        </div>
+
 
         <!-- Right Sidebar -->
         <div class="w-80 p-4">

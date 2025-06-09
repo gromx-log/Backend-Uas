@@ -21,30 +21,5 @@
         <button type="submit">Post</button>
     </form>
 
-    <hr>
-
-    <h2>All Posts</h2>
-
-    {{-- Daftar semua post --}}
-    @forelse($posts as $post)
-        <div style="margin-bottom: 20px;">
-            {{-- Menggunakan $post->user->username untuk menampilkan nama pengguna --}}
-            <p><strong>{{ $post->user->username ?? 'Unknown' }}</strong> - {{ $post->created_at->format('Y-m-d H:i') }}</p>
-            <p>{{ $post->content }}</p>
-
-            {{-- Tombol delete hanya untuk post milik user --}}
-            @if(auth()->id() === $post->userId) {{-- Perbaikan: Gunakan $post->userId --}}
-                <form method="POST" action="{{ route('posts.destroy', $post->postId) }}"> {{-- Perbaikan: Gunakan $post->postId --}}
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" onclick="return confirm('Delete this post?')">Delete</button>
-                </form>
-            @endif
-        </div>
-        <hr>
-    @empty
-        <p>No posts found.</p>
-    @endforelse
-
 </body>
 </html>

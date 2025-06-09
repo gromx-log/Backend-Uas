@@ -6,13 +6,12 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\FollowsController;
 use App\Http\Controllers\UserController;
 
-Route::get('/', function () {
-    return view('home.home');
-})->middleware('auth')->name('home'); // Authenticated users only
+use App\Http\Controllers\HomeController;
 
-Route::get('/home', function () {
-    return view('home.home');
-})->middleware('auth')->name('home'); // Authenticated users only
+
+// home
+Route::get('/', [HomeController::class, 'index'])->middleware('auth')->name('home');
+Route::get('/home', [HomeController::class, 'index'])->middleware('auth');
 
 // Guest routes
 Route::middleware('guest')->group(function () {
@@ -34,9 +33,9 @@ Route::middleware('auth')->group(function () {
 
     // Follows
     Route::post('/users/{user}/follow', [FollowsController::class, 'follow'])->name('users.follow');
-Route::delete('/users/{user}/follow', [FollowsController::class, 'unfollow'])->name('users.unfollow');
-Route::get('/users/{user}/followers', [FollowsController::class, 'followers'])->name('users.followers');
-Route::get('/users/{user}/following', [FollowsController::class, 'following'])->name('users.following');
+    Route::delete('/users/{user}/follow', [FollowsController::class, 'unfollow'])->name('users.unfollow');
+    Route::get('/users/{user}/followers', [FollowsController::class, 'followers'])->name('users.followers');
+    Route::get('/users/{user}/following', [FollowsController::class, 'following'])->name('users.following');
 
 
     // Profile edit & update
@@ -44,6 +43,6 @@ Route::get('/users/{user}/following', [FollowsController::class, 'following'])->
     Route::put('/profile', [UserController::class, 'update'])->name('profile.update');
 
     // Profile show (by username)
-    Route::get('/profile/{username}', [UserController::class, 'show'])->name('profile.show');
+    Route::get('/profile/{userHandle}', [UserController::class, 'show'])->name('profile.show');
 
 });
