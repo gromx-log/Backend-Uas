@@ -6,6 +6,12 @@ use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+//Supporting hash
+use Illuminate\Support\Facades\Hash;
+
+//Supporting Str
+use Illuminate\Support\Str;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -16,9 +22,18 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Test User',
+            'userId' => '1',
             'email' => 'test@example.com',
             'password' => Hash::make('blahblah'),
+            'remember_token' => Str::random(10),
+            'created_at' => now(),
+            'updated_at' => now(),
+            'username' => 'testuser',
+            'userHandle' => 'testuser123',
+            'bio' => 'Test User',
+            'followCount' => 0,
+            'followedCount' => 0,
+            'joined_at' => now(),
         ]);
     }
 }
