@@ -27,4 +27,17 @@ class Post extends Model
     {
         return $this->belongsTo(User::class, 'userId', 'userId');
     }
+
+    // Post ini adalah balasan terhadap post lain
+    public function parent()
+    {
+        return $this->belongsTo(Post::class, 'parent_post_id', 'postId');
+    }
+
+    // Post ini memiliki banyak balasan
+    public function replies()
+    {
+        return $this->hasMany(Post::class, 'parent_post_id', 'postId')->orderBy('created_at', 'asc');
+    }
+
 }

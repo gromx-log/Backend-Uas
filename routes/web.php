@@ -30,6 +30,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
     Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+    // Reply to a post
+    Route::post('/posts/{post}/reply', [PostController::class, 'reply'])->name('posts.reply');
 
     // Follows
     Route::post('/users/{user}/follow', [FollowsController::class, 'follow'])->name('users.follow');
@@ -45,4 +47,5 @@ Route::middleware('auth')->group(function () {
     // Profile show (by username)
     Route::get('/profile/{userHandle}', [UserController::class, 'show'])->name('profile.show');
 
+    
 });

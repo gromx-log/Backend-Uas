@@ -14,7 +14,11 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with('user')->latest()->get();
+        $posts = Post::with(['user', 'replies.user'])
+            ->whereNull('parent_post_id') // Hanya post utama
+            ->latest('created_at')
+            ->get();
+
         return view('home.post', compact('posts'));
     }
 
@@ -83,5 +87,23 @@ class PostController extends Controller
         $post->delete();
         
         return redirect()->route('home')->with('success', 'Post berhasil dihapus!');
+    }
+    //Fungsi reply
+    public function reply(Request $request, $postId)
+    {
+        $request->validate([
+            'content' => 'required|string|max:280',
+        ]);
+
+        $originalPost = Post::findOrFail($postId);
+
+        $reply = Post::create([
+            'userId' => auth()->id(),
+            'content' => $request->input('content'),
+            'parent_post_id' => $originalPost->postId,
+            'created_at' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Reply posted!');
     }
 }
