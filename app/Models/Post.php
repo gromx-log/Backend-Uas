@@ -40,4 +40,9 @@ class Post extends Model
         return $this->hasMany(Post::class, 'parent_post_id', 'postId')->orderBy('created_at', 'asc');
     }
 
+    public function bookmarkedBy()
+    {
+        return $this->belongsToMany(User::class, 'bookmarks', 'postId', 'userId')->withTimestamps();
+    }
+
 }

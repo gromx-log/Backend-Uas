@@ -36,9 +36,11 @@
                         <i class="fas fa-envelope text-xl"></i>
                         <span class="text-xl">Messages</span>
                     </a>
-                    <a href="#" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
+                    <a href="{{ route('bookmarks.index') }}" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
                         <i class="fas fa-bookmark text-xl"></i>
                         <span class="text-xl">Bookmarks</span>
+                    </a>
+
                     </a>
                     <a href="{{ route('profile.show', $user->userHandle) }}" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
                         <i class="fas fa-user text-xl"></i>

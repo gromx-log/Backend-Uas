@@ -98,4 +98,11 @@ class User extends Authenticatable
     {
         return $this->following()->count();
     }
+
+    public function bookmarks()
+    {
+        return $this->belongsToMany(Post::class, 'bookmarks', 'userId', 'postId')
+                    ->withPivot('created_at'); // hanya gunakan created_at
+    }
+
 }

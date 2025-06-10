@@ -8,6 +8,10 @@ use App\Http\Controllers\UserController;
 
 use App\Http\Controllers\HomeController;
 
+use App\Http\Controllers\BookmarksController;
+
+Route::post('/posts/{postId}/bookmark', [BookmarksController::class, 'toggle'])->name('bookmarks.toggle');
+Route::get('/bookmarks', [BookmarksController::class, 'index'])->name('bookmarks.index');
 
 // home
 Route::get('/', [HomeController::class, 'index'])->middleware('auth')->name('home');
@@ -53,5 +57,6 @@ Route::middleware('auth')->group(function () {
     // Profile show (by username)
     Route::get('/profile/{userHandle}', [UserController::class, 'show'])->name('profile.show');
 
+    Route::post('/posts/{postId}/bookmark', [BookmarksController::class, 'toggle'])->name('bookmarks.toggle');
     
 });
