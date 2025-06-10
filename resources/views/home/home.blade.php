@@ -108,7 +108,7 @@
                                 <!-- Action buttons with counts -->
                                 <div class="flex items-center justify-between max-w-md">
                                     <!-- Comment button -->
-                                    <button class="flex items-center space-x-2 text-gray-500 hover:text-blue-400 group" onclick="event.stopPropagation();">
+                                    <button class="flex items-center space-x-2 text-gray-500 hover:text-blue-400 group" onclick="event.stopPropagation(); window.location='{{ route('posts.show', $post->postId) }}';">
                                         <div class="p-2 rounded-full group-hover:bg-blue-900 group-hover:bg-opacity-20 transition-colors">
                                             <i class="far fa-comment text-sm"></i>
                                         </div>
