@@ -11,8 +11,14 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $posts = Post::with('user')->latest()->get();
         $user = Auth::user();
+
+        $posts = Post::with(['user', 'replies.user']) 
+                    ->whereNull('parent_post_id')
+                    ->latest('created_at')
+                    ->get();
+
+        return view('home.home', compact('posts', 'user'));
 
         return view('home.home', compact('posts', 'user'));
     }
