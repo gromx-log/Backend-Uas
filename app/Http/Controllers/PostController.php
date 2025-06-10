@@ -14,12 +14,13 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with(['user', 'replies.user'])
+        $user = Auth::user();
+        $posts = Post::with('user')
             ->whereNull('parent_post_id') // Hanya post utama
             ->latest('created_at')
             ->get();
 
-        return view('home.post', compact('posts'));
+        return view('home.home', compact('posts','user'));
     }
 
     /**
@@ -27,7 +28,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+         return view('posts.post');
     }
 
     /**
@@ -56,7 +57,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return view('posts.show', compact('post'));
     }
 
     /**
@@ -81,7 +82,7 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         if ($post->userId !== Auth::id()) {
-            return redirect()->route('posts.index')->with('error', 'Anda tidak diizinkan menghapus postingan ini.');
+            return redirect()->route('posts.create')->with('error', 'Anda tidak diizinkan menghapus postingan ini.');
         }
     
         $post->delete();

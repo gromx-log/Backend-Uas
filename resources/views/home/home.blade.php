@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body class="bg-black text-white min-h-screen">
     <div class="flex max-w-screen-xl mx-auto">
         <!-- Left Sidebar -->
@@ -46,23 +47,24 @@
                 </nav>
                 
                 <!-- Tweet Button -->
-                <form action="{{ route('posts.index') }}" method="GET">
+                <form action="{{ route('posts.create') }}" method="GET">
                     <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full w-full transition-colors">
                         Post
                     </button>
                 </form>
 
                 <!-- User Profile Section -->
+                <a href="{{ route('profile.show', $user->userHandle) }}">
                 <div class="mt-auto pt-4">
                     <div class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 cursor-pointer">
-                        <img src="https://via.placeholder.com/40x40/gray/white?text=U" alt="Profile" class="w-10 h-10 rounded-full">
                         <div class="flex-1">
-                            <div class="font-bold">Username</div>
-                            <div class="text-gray-500 text-sm">@username</div>
+                            <div class="font-bold">{{$user->username}}</div>
+                            <div class="text-gray-500 text-sm">{{ '@' . $user->userHandle }}</div>
                         </div>
-                        <i class="fas fa-ellipsis-h"></i>
+                        
                     </div>
                 </div>
+                </a>
             </div>
         </div>
 
@@ -84,26 +86,20 @@
                 <!-- Timeline/Feed -->
                 <div class="p-4 space-y-6">
                     @forelse($posts as $post)
-                        <div class="bg-gray-900 p-4 rounded-lg shadow-md">
+                        <a href="{{ route('posts.show', $post->postId) }}" class="block bg-gray-900 p-4 rounded-lg shadow-md hover:bg-gray-800 transition">
                             <div class="flex justify-between items-center mb-2">
                                 <div class="text-sm text-gray-400">
                                     <strong class="text-white">{{ $post->user->username ?? 'Unknown' }}</strong>
                                     <span class="ml-2">{{ $post->created_at->format('Y-m-d H:i') }}</span>
                                 </div>
-                                @if(auth()->id() === $post->userId)
-                                    <form method="POST" action="{{ route('posts.destroy', $post->postId) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" onclick="return confirm('Delete this post?')" class="text-red-500 hover:underline text-sm">Delete</button>
-                                    </form>
-                                @endif
                             </div>
                             <p class="text-white text-base">{{ $post->content }}</p>
-                        </div>
+                        </a>
                     @empty
                         <p class="text-center text-gray-500">No posts found.</p>
                     @endforelse
                 </div>
+
             </div>
 
 

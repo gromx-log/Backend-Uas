@@ -27,11 +27,17 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     
     // Posts
+    // save a post when posting
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
-    Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+    // delete a post
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+    // show post form
+    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
     // Reply to a post
     Route::post('/posts/{post}/reply', [PostController::class, 'reply'])->name('posts.reply');
+    // show a specific post
+    Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
+
 
     // Follows
     Route::post('/users/{user}/follow', [FollowsController::class, 'follow'])->name('users.follow');
