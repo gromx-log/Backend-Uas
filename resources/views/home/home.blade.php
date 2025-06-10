@@ -68,40 +68,106 @@
             </div>
         </div>
 
-
         <!-- Main Content -->
-            <div class="flex-1 ml-64 border-x border-gray-800">
-                <!-- Header -->
-                <div class="sticky top-0 bg-black bg-opacity-80 backdrop-blur p-4 border-b border-gray-800">
-                    <h1 class="text-xl font-bold">Home</h1>
-                </div>
-
-                <!-- Success Message -->
-                @if(session('success'))
-                    <div class="bg-green-700 bg-opacity-80 text-green-200 p-3 rounded mb-4 mx-4">
-                        {{ session('success') }}
-                    </div>
-                @endif
-                
-                <!-- Timeline/Feed -->
-                <div class="p-4 space-y-6">
-                    @forelse($posts as $post)
-                        <a href="{{ route('posts.show', $post->postId) }}" class="block bg-gray-900 p-4 rounded-lg shadow-md hover:bg-gray-800 transition">
-                            <div class="flex justify-between items-center mb-2">
-                                <div class="text-sm text-gray-400">
-                                    <strong class="text-white">{{ $post->user->username ?? 'Unknown' }}</strong>
-                                    <span class="ml-2">{{ $post->created_at->format('Y-m-d H:i') }}</span>
-                                </div>
-                            </div>
-                            <p class="text-white text-base">{{ $post->content }}</p>
-                        </a>
-                    @empty
-                        <p class="text-center text-gray-500">No posts found.</p>
-                    @endforelse
-                </div>
-
+        <div class="flex-1 ml-64 border-x border-gray-800">
+            <!-- Header -->
+            <div class="sticky top-0 bg-black bg-opacity-80 backdrop-blur p-4 border-b border-gray-800">
+                <h1 class="text-xl font-bold">Home</h1>
             </div>
 
+            <!-- Success Message -->
+            @if(session('success'))
+                <div class="bg-green-700 bg-opacity-80 text-green-200 p-3 rounded mb-4 mx-4">
+                    {{ session('success') }}
+                </div>
+            @endif
+            
+            <!-- Timeline/Feed -->
+            <div class="space-y-0">
+                @forelse($posts as $post)
+                    <div class="border-b border-gray-800 p-4 hover:bg-gray-950 transition cursor-pointer" onclick="window.location='{{ route('posts.show', $post->postId) }}'">
+                        <div class="flex space-x-3">
+                            <!-- Avatar placeholder -->
+                            <div class="w-12 h-12 bg-gray-600 rounded-full flex-shrink-0 flex items-center justify-center">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
+                            
+                            <!-- Post content -->
+                            <div class="flex-1 min-w-0">
+                                <!-- User info and timestamp -->
+                                <div class="flex items-center space-x-2 mb-1">
+                                    <span class="font-bold text-white">{{ $post->user->username ?? 'Unknown' }}</span>
+                                    <span class="text-gray-500 text-sm">{{ '@' . ($post->user->userHandle ?? 'unknown') }}</span>
+                                    <span class="text-gray-500 text-sm">·</span>
+                                    <span class="text-gray-500 text-sm">{{ $post->created_at->format('M j') }}</span>
+                                </div>
+                                
+                                <!-- Post text -->
+                                <p class="text-white text-base mb-3">{{ $post->content }}</p>
+                                
+                                <!-- Action buttons with counts -->
+                                <div class="flex items-center justify-between max-w-md">
+                                    <!-- Comment button -->
+                                    <button class="flex items-center space-x-2 text-gray-500 hover:text-blue-400 group" onclick="event.stopPropagation();">
+                                        <div class="p-2 rounded-full group-hover:bg-blue-900 group-hover:bg-opacity-20 transition-colors">
+                                            <i class="far fa-comment text-sm"></i>
+                                        </div>
+                                        <span class="text-sm">{{ $post->commentsCount() }}</span>
+                                    </button>
+                                    
+                                    <!-- Retweet button -->
+                                    <button class="flex items-center space-x-2 text-gray-500 hover:text-green-400 group" onclick="event.stopPropagation();">
+                                        <div class="p-2 rounded-full group-hover:bg-green-900 group-hover:bg-opacity-20 transition-colors">
+                                            <i class="fas fa-retweet text-sm"></i>
+                                        </div>
+                                        <span class="text-sm">0</span>
+                                    </button>
+                                    
+                                    <!-- Like button -->
+                                    <div class="flex items-center space-x-2">
+                                        @if(auth()->check() && $post->isLikedBy(auth()->user()->userId))
+                                            <form action="{{ route('posts.unlike', $post->postId) }}" method="POST" class="inline" onclick="event.stopPropagation();">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="flex items-center space-x-2 text-red-500 hover:text-red-400 group">
+                                                    <div class="p-2 rounded-full group-hover:bg-red-900 group-hover:bg-opacity-20 transition-colors">
+                                                        <i class="fas fa-heart text-sm"></i>
+                                                    </div>
+                                                </button>
+                                            </form>
+                                        @else
+                                            <form action="{{ route('posts.like', $post->postId) }}" method="POST" class="inline" onclick="event.stopPropagation();">
+                                                @csrf
+                                                <button type="submit" class="flex items-center space-x-2 text-gray-500 hover:text-red-400 group">
+                                                    <div class="p-2 rounded-full group-hover:bg-red-900 group-hover:bg-opacity-20 transition-colors">
+                                                        <i class="far fa-heart text-sm"></i>
+                                                    </div>
+                                                </button>
+                                            </form>
+                                        @endif
+                                        <span class="text-sm {{ $post->isLikedBy(auth()->user()->userId ?? 0) ? 'text-red-500' : 'text-gray-500' }}">
+                                            {{ $post->likesCount() }}
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- Share button -->
+                                    <button class="flex items-center space-x-2 text-gray-500 hover:text-blue-400 group" onclick="event.stopPropagation();">
+                                        <div class="p-2 rounded-full group-hover:bg-blue-900 group-hover:bg-opacity-20 transition-colors">
+                                            <i class="fas fa-share text-sm"></i>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="p-8 text-center">
+                        <p class="text-gray-500 text-lg">No posts found.</p>
+                        <p class="text-gray-600 text-sm mt-2">Be the first to share something!</p>
+                    </div>
+                @endforelse
+            </div>
+        </div>
 
         <!-- Right Sidebar -->
         <div class="w-80 p-4">
@@ -110,5 +176,6 @@
             <!-- Who to Follow -->
         </div>
     </div>
+    
 </body>
 </html>
