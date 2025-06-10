@@ -5,7 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\FollowsController;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\LikesController;
 use App\Http\Controllers\HomeController;
 
 
@@ -37,6 +37,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/posts/{post}/reply', [PostController::class, 'reply'])->name('posts.reply');
     // show a specific post
     Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
+    Route::post('/posts/{post}/like', [LikesController::class, 'like'])->name('posts.like');
+    Route::delete('/posts/{post}/like', [LikesController::class, 'unlike'])->name('posts.unlike');
 
 
     // Follows
