@@ -22,14 +22,14 @@ class UserSeeder extends Seeder
             $firstName = $faker->firstName;
             $lastName = $faker->lastName;
             $username = strtolower($firstName . $lastName . rand(100, 999));
-            $userHandle = '@' . strtolower($firstName . $lastName . rand(10, 99));
+            $userHandle = strtolower($firstName . $lastName . rand(10, 99));
             
             // Cek agar username dan userHandle nya selalu unik
             while (DB::table('users')->where('username', $username)->exists()) {
                 $username = strtolower($firstName . $lastName . rand(1000, 9999));
             }
             while (DB::table('users')->where('userHandle', $userHandle)->exists()) {
-                $userHandle = '@' . strtolower($firstName . $lastName . rand(100, 999));
+                $userHandle = strtolower($firstName . $lastName . rand(100, 999));
             }
             
             // Insert user ke database
@@ -53,13 +53,13 @@ class UserSeeder extends Seeder
             [
                 'email' => 'admin@gmail.com',
                 'username' => 'Admin',
-                'userHandle' => '@therealadmin27',
+                'userHandle' => 'therealadmin27',
                 'bio' => 'Atmin Datang',
             ],
             [
                 'email' => 'mrfrelvang@gmail.com',
                 'username' => 'Mr. Frelvang',
-                'userHandle' => '@the_creator',
+                'userHandle' => 'the_creator',
                 'bio' => 'Creator & CEO | Coffee enthusiast | Dog lover',
             ]
         ];
