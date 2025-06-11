@@ -99,17 +99,25 @@
                 @forelse($posts as $post)
                     <div class="border-b border-gray-800 p-4 hover:bg-gray-950 transition cursor-pointer" onclick="window.location='{{ route('posts.show', $post->postId) }}'">
                         <div class="flex space-x-3">
-                            <!-- Avatar placeholder -->
-                            <div class="w-12 h-12 bg-gray-600 rounded-full flex-shrink-0 flex items-center justify-center">
+                            <a href="{{ route('profile.show', $post->user->userHandle ?? 'unknown') }}" 
+                               class="w-12 h-12 bg-gray-600 rounded-full flex-shrink-0 flex items-center justify-center hover:bg-gray-500 transition-colors" 
+                               onclick="event.stopPropagation();">
                                 <i class="fas fa-user text-gray-400"></i>
-                            </div>
+                            </a>
                             
                             <!-- Post content -->
                             <div class="flex-1 min-w-0">
-                                <!-- User info and timestamp -->
                                 <div class="flex items-center space-x-2 mb-1">
-                                    <span class="font-bold text-white">{{ $post->user->username ?? 'Unknown' }}</span>
-                                    <span class="text-gray-500 text-sm">{{ '@' . ($post->user->userHandle ?? 'unknown') }}</span>
+                                    <a href="{{ route('profile.show', $post->user->userHandle ?? 'unknown') }}" 
+                                       class="font-bold text-white hover:underline" 
+                                       onclick="event.stopPropagation();">
+                                        {{ $post->user->username ?? 'Unknown' }}
+                                    </a>
+                                    <a href="{{ route('profile.show', $post->user->userHandle ?? 'unknown') }}" 
+                                       class="text-gray-500 text-sm hover:underline" 
+                                       onclick="event.stopPropagation();">
+                                        {{ '@' . ($post->user->userHandle ?? 'unknown') }}
+                                    </a>
                                     <span class="text-gray-500 text-sm">·</span>
                                     <span class="text-gray-500 text-sm">{{ $post->created_at->format('M j') }}</span>
                                 </div>
