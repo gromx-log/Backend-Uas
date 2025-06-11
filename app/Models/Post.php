@@ -56,6 +56,12 @@ class Post extends Model
         return $this->likes()->count();
     }
 
+    public function bookmarkedBy()
+    {
+        return $this->belongsToMany(User::class, 'bookmarks', 'postId', 'userId')->withTimestamps();
+    }
+
+
     public function getCommentsCountAttribute()
     {
         return $this->replies()->count();

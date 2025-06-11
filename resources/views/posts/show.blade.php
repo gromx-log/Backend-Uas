@@ -17,6 +17,19 @@
         </form>
     @endif
 
+    {{-- Bookmark Button --}}
+    <form method="POST" action="{{ route('bookmarks.toggle', $post->postId) }}" style="margin-top: 10px;">
+        @csrf
+        <button type="submit">
+            @if(auth()->user()->bookmarks->contains($post))
+                Sudah di-bookmark
+            @else
+                Bookmark Post
+            @endif
+        </button>
+    </form>
+
+
     {{-- 💬 Reply Form --}}
     <form method="POST" action="{{ route('posts.reply', $post->postId) }}" style="margin-top: 12px;">
         @csrf
