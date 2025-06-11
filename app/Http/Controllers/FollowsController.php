@@ -38,7 +38,10 @@ class FollowsController extends Controller
      */
     public function show(follows $follows)
     {
-        //
+        $user = User::where('userHandle', $userHandle)->firstOrFail();
+        $isFollowing = auth()->check() ? auth()->user()->isFollowing($user->userId) : false;
+
+        return view('users.show', compact('user', 'isFollowing'));
     }
 
     /**

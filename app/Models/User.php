@@ -111,4 +111,10 @@ class User extends Authenticatable
         return $this->hasMany(Like::class, 'user_id', 'userId');
     }
 
+    public function getRouteKeyName()
+    {
+        return 'userId';
+    }
+
+
 }
