@@ -59,11 +59,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Post::class, 'user_id', 'userId');
     }
-        public function followers()
-        {
-        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id')
-                    ->withTimestamps();
-        }
+    
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id');
+    }
+
     // Following (yang diikuti oleh user ini)
     public function following()
     {
@@ -98,6 +99,7 @@ class User extends Authenticatable
     {
         return $this->following()->count();
     }
+
     public function likes()
     {
         return $this->hasMany(Like::class, 'user_id', 'userId');
