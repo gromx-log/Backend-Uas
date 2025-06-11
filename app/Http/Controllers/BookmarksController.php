@@ -4,16 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Models\Bookmarks;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Post;
 
 class BookmarksController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
+
+     public function index()
+     {
+         $user = Auth::user();
+     
+         $bookmarks = $user->bookmarks()->with('user')->get();
+     
+         return view('bookmarks.index', compact('bookmarks'));
+     }
+
+    public function toggle($postId)
+{
+    $user = Auth::user();
+    $post = Post::findOrFail($postId);
+
+    if ($user->bookmarks()->where('bookmarks.postId', $postId)->exists()) {
+        $user->bookmarks()->detach($postId);
+        return back()->with('success', 'Bookmark dihapus.');
+    } else {
+        $user->bookmarks()->attach($postId);
+        return back()->with('success', 'Post berhasil di-bookmark!');
     }
+}
 
     /**
      * Show the form for creating a new resource.

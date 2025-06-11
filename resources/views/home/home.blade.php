@@ -36,9 +36,11 @@
                         <i class="fas fa-envelope text-xl"></i>
                         <span class="text-xl">Messages</span>
                     </a>
-                    <a href="#" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
+                    <a href="{{ route('bookmarks.index') }}" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
                         <i class="fas fa-bookmark text-xl"></i>
                         <span class="text-xl">Bookmarks</span>
+                    </a>
+
                     </a>
                     <a href="{{ route('profile.show', $user->userHandle) }}" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
                         <i class="fas fa-user text-xl"></i>
@@ -65,6 +67,16 @@
                     </div>
                 </div>
                 </a>
+
+                <!-- Logout Button -->
+                <form method="POST" action="{{ route('logout') }}" class="pt-4">
+                    @csrf
+                    <button type="submit" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors text-red-500 w-full">
+                        <i class="fas fa-sign-out-alt text-xl"></i>
+                        <span class="text-xl font-semibold">Logout</span>
+                    </button>
+                </form>
+
             </div>
         </div>
 
@@ -108,7 +120,7 @@
                                 <!-- Action buttons with counts -->
                                 <div class="flex items-center justify-between max-w-md">
                                     <!-- Comment button -->
-                                    <button class="flex items-center space-x-2 text-gray-500 hover:text-blue-400 group" onclick="event.stopPropagation();">
+                                    <button class="flex items-center space-x-2 text-gray-500 hover:text-blue-400 group" onclick="event.stopPropagation(); window.location='{{ route('posts.show', $post->postId) }}';">
                                         <div class="p-2 rounded-full group-hover:bg-blue-900 group-hover:bg-opacity-20 transition-colors">
                                             <i class="far fa-comment text-sm"></i>
                                         </div>

@@ -100,8 +100,15 @@ class User extends Authenticatable
         return $this->following()->count();
     }
 
+    public function bookmarks()
+    {
+        return $this->belongsToMany(Post::class, 'bookmarks', 'userId', 'postId')
+                    ->withPivot('created_at'); // hanya gunakan created_at
+    }
+
     public function likes()
     {
         return $this->hasMany(Like::class, 'user_id', 'userId');
     }
+
 }
