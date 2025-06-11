@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('likes', function (Blueprint $table) {
-            $table->foreignId('userId')
-                  ->constrained('users', 'userId') 
-                  ->constrained('users')
-                  ->onDelete('cascade'); 
-            $table->foreignId('postId')
-                  ->constrained('posts', 'postId') 
-                  ->onDelete('cascade'); 
-            $table->timestamp('created_at')->useCurrent(); 
-            $table->primary(['userId', 'postId']); 
+            $table->id();
+            $table->unsignedBigInteger('user_id');   // foreign key ke users
+            $table->unsignedBigInteger('post_id');   // foreign key ke posts
+            $table->timestamps();
+
+            $table->foreign('user_id')->references('userId')->on('users')->onDelete('cascade');
+            $table->foreign('post_id')->references('postId')->on('posts')->onDelete('cascade');
+
+            $table->unique(['user_id', 'post_id']); // 1 like per user per post
         });
     }
 

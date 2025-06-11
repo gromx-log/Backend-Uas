@@ -105,4 +105,9 @@ class User extends Authenticatable
                     ->withPivot('created_at'); // hanya gunakan created_at
     }
 
+    public function likes()
+    {
+        return $this->hasMany(Like::class, 'user_id', 'userId');
+    }
+  //End of Class
 }
