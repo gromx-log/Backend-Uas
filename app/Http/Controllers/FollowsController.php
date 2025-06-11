@@ -2,108 +2,107 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\follows;
+use App\Models\Follows;
 use Illuminate\Http\Request;
 use App\Models\User;
-
+use Illuminate\Support\Facades\Auth;
 
 class FollowsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function follow(User $user)
     {
-        //
-    }
+        $follower = Auth::user();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(follows $follows)
-    {
-        $user = User::where('userHandle', $userHandle)->firstOrFail();
-        $isFollowing = auth()->check() ? auth()->user()->isFollowing($user->userId) : false;
-
-        return view('users.show', compact('user', 'isFollowing'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(follows $follows)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, follows $follows)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(follows $follows)
-    {
-        //
-    }
-
-    public function follow(Request $request, User $user)
-    {
-        $currentUser = auth()->user();
-        
-        if ($currentUser->id == $user->id) {
-            return response()->json(['error' => 'You cannot follow yourself'], 400);
+        // Cegah follow diri sendiri
+        if ($follower->id == $user->userId) {
+            return back()->with('error', 'Kamu tidak bisa follow dirimu sendiri.');
+        }
+        $userIdToFollow = $user->getKey(); // ini akan ambil 'userId' karena sudah override
+        // Cek apakah sudah follow
+        if (!$follower->following->contains($userIdToFollow)) {
+            $follower->following()->attach($userIdToFollow);
         }
 
-        $currentUser->follow($user->id);
-        
-        return response()->json([
-            'status' => 'followed',
-            'followers_count' => $user->followersCount()
-        ]);
+        return back();
     }
 
-    public function unfollow(Request $request, User $user)
+    public function unfollow(User $user)
     {
-        auth()->user()->unfollow($user->id);
-        
-        return response()->json([
-            'status' => 'unfollowed', 
-            'followers_count' => $user->followersCount()
-        ]);
+        $follower = Auth::user();
+
+        $follower->following()->detach($user->id);
+
+        return back();
     }
 
-    public function followers(User $user)
+
+    public function followers($userHandle)
     {
-        $followers = $user->followers()->paginate(20);
+        $user = User::where('userHandle', $userHandle)->firstOrFail();
+        $followers = $user->followers()
+            ->select('users.userId', 'users.username', 'users.userHandle', 'users.bio')
+            ->withPivot('created_at')
+            ->orderBy('follows.created_at', 'desc')
+            ->paginate(20);
+
+        // Check if current user is following each follower
+        if (auth()->check()) {
+            $currentUserId = auth()->user()->userId;
+            $followers->getCollection()->transform(function ($follower) use ($currentUserId) {
+                $follower->is_following = auth()->user()->isFollowing($follower->userId);
+                return $follower;
+            });
+        }
+
         return view('users.followers', compact('user', 'followers'));
     }
 
-    public function following(User $user) 
+    public function following($userHandle)
     {
-        $following = $user->following()->paginate(20);
+        $user = User::where('userHandle', $userHandle)->firstOrFail();
+        $following = $user->following()
+            ->select('users.userId', 'users.username', 'users.userHandle', 'users.bio')
+            ->withPivot('created_at')
+            ->orderBy('follows.created_at', 'desc')
+            ->paginate(20);
+
+        // Check if current user is following each user
+        if (auth()->check()) {
+            $currentUserId = auth()->user()->userId;
+            $following->getCollection()->transform(function ($followedUser) use ($currentUserId) {
+                $followedUser->is_following = auth()->user()->isFollowing($followedUser->userId);
+                return $followedUser;
+            });
+        }
+
         return view('users.following', compact('user', 'following'));
     }
 
+    public function show($userHandle)
+    {
+        $user = User::where('userHandle', $userHandle)->firstOrFail();
+        $isFollowing = auth()->check() ? auth()->user()->isFollowing($user->userId) : false;
+        
+        // Get user's posts
+        $posts = $user->posts()->with('user')->latest()->paginate(10);
+
+        return view('users.show', compact('user', 'isFollowing', 'posts'));
+    }
+
+    // API endpoint to get follow status
+    public function getFollowStatus($userId)
+    {
+        if (!auth()->check()) {
+            return response()->json(['is_following' => false]);
+        }
+
+        $user = User::findOrFail($userId);
+        $isFollowing = auth()->user()->isFollowing($userId);
+
+        return response()->json([
+            'is_following' => $isFollowing,
+            'followers_count' => $user->followersCount(),
+            'following_count' => $user->followingCount()
+        ]);
+    }
 }
