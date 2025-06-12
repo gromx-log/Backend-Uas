@@ -8,7 +8,7 @@
             margin: 0;
             background-color: #000;
             color: #e7e9ea;
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         .container {
@@ -57,6 +57,7 @@
         .post-content {
             font-size: 18px;
             margin: 15px 0;
+            line-height: 1.4;
         }
 
         .reply-form textarea {
@@ -70,6 +71,7 @@
             margin-bottom: 10px;
             border-radius: 12px;
             transition: border-color 0.2s ease;
+            box-sizing: border-box;
         }
 
         .reply-form textarea:focus {
@@ -124,22 +126,148 @@
             text-decoration: underline;
         }
 
-        .bookmark, .delete {
-            color: #1d9bf0;
-            font-size: 14px;
-            margin-right: 15px;
-            cursor: pointer;
-            text-decoration: none;
+        /* Modern X-style Action buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            max-width: 425px;
+            margin: 15px 0;
+            padding: 10px 0;
+            border-top: 1px solid #2f3336;
+            border-bottom: 1px solid #2f3336;
+        }
+
+        .action-btn {
             background: none;
             border: none;
-            transition: opacity 0.2s ease;
+            color: #71767b;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            position: relative;
         }
 
-        .bookmark:hover, .delete:hover {
-            opacity: 0.8;
+        .action-btn:hover {
+            background-color: rgba(29, 155, 240, 0.1);
         }
 
-        .delete {
+        .action-btn .count {
+            margin-left: 8px;
+            font-size: 13px;
+            color: #71767b;
+        }
+
+        /* Reply button styling */
+        .reply-btn {
+            color: #71767b;
+        }
+
+        .reply-btn:hover {
+            background-color: rgba(29, 155, 240, 0.1);
+            color: #1d9bf0;
+        }
+
+        .reply-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Like button styling */
+        .like-btn {
+            color: #71767b;
+        }
+
+        .like-btn:hover {
+            background-color: rgba(249, 24, 128, 0.1);
+            color: #f91880;
+        }
+
+        .like-btn.liked {
+            color: #f91880;
+        }
+
+        .like-btn.liked:hover {
+            background-color: rgba(249, 24, 128, 0.1);
+        }
+
+        .like-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Bookmark button styling */
+        .bookmark-btn {
+            color: #71767b;
+        }
+
+        .bookmark-btn:hover {
+            background-color: rgba(0, 186, 124, 0.1);
+            color: #00ba7c;
+        }
+
+        .bookmark-btn.bookmarked {
+            color: #1d9bf0;
+        }
+
+        .bookmark-btn.bookmarked:hover {
+            background-color: rgba(29, 155, 240, 0.1);
+        }
+
+        /* SVG Icons */
+        .icon {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* Owner actions styling */
+        .owner-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #2f3336;
+        }
+
+        .edit-btn {
+            background: none;
+            border: none;
+            color: #1d9bf0;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 15px;
+            transition: all 0.2s ease;
+        }
+
+        .edit-btn:hover {
+            background-color: rgba(29, 155, 240, 0.1);
+            color: #1d9bf0;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #f4212e;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 15px;
+            transition: all 0.2s ease;
+        }
+
+        .delete-btn:hover {
+            background-color: rgba(244, 33, 46, 0.1);
             color: #f4212e;
         }
 
@@ -185,24 +313,72 @@
             </div>
             <div class="post-content">{{ $post->content }}</div>
 
-            @if(auth()->id() === $post->userId)
-                <form method="POST" action="{{ route('posts.destroy', $post->postId) }}" style="display:inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="delete" onclick="return confirm('Delete this post?')">Delete Post</button>
-                </form>
-            @endif
+            {{-- Modern X-style Action buttons --}}
+            <div class="action-buttons">
+                {{-- Reply button --}}
+                <div class="reply-group">
+                    <button class="action-btn reply-btn" onclick="document.querySelector('.reply-form textarea').focus()">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M1.751 10c0-4.42 3.584-8.005 8.005-8.005h4.366c4.49 0 8.129 3.64 8.129 8.129s-3.64 8.129-8.129 8.129H2.084L1.751 10z"/>
+                            <path d="M12.5 8.5l-2 2 2 2"/>
+                        </svg>
+                    </button>
+                    <span class="count">{{ $post->replies ? $post->replies->count() : 0 }}</span>
+                </div>
 
-            <form method="POST" action="{{ route('bookmarks.toggle', $post->postId) }}" style="display:inline;">
-                @csrf
-                <button type="submit" class="bookmark">
-                    @if(auth()->user()->bookmarks->contains($post))
-                        ✅ Bookmarked
-                    @else
-                        🔖 Bookmark
-                    @endif
-                </button>
-            </form>
+                {{-- Like button --}}
+                <div class="like-group">
+                    <form method="POST" action="{{ route('posts.like', $post->postId) }}" style="display:inline;">
+                        @csrf
+                        <button type="submit" class="action-btn like-btn {{ $post->isLikedBy(auth()->id()) ? 'liked' : '' }}">
+                            @if($post->isLikedBy(auth()->id()))
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M20.884 13.19c-1.351 2.48-4.001 5.12-8.379 7.67l-.503.3-.504-.3c-4.379-2.55-7.029-5.19-8.382-7.67-1.36-2.5-1.41-4.86-.514-6.67.887-1.79 2.647-2.91 4.601-3.01 1.651-.09 3.368.56 4.798 2.01 1.429-1.45 3.146-2.1 4.796-2.01 1.954.1 3.714 1.22 4.601 3.01.896 1.81.846 4.17-.514 6.67z"/>
+                                </svg>
+                            @else
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M16.697 5.5c-1.222-.06-2.679.51-3.89 2.16l-.805 1.09-.806-1.09C9.984 6.01 8.526 5.44 7.304 5.5c-1.243.07-2.349.78-2.91 1.91-.552 1.12-.633 2.78.479 4.82 1.074 1.97 3.257 4.27 7.129 6.61 3.87-2.34 6.052-4.64 7.126-6.61 1.111-2.04 1.03-3.7.477-4.82-.561-1.13-1.666-1.84-2.908-1.91zm4.187 7.69c-1.351 2.48-4.001 5.12-8.379 7.67l-.503.3-.504-.3c-4.379-2.55-7.029-5.19-8.382-7.67-1.36-2.5-1.41-4.86-.514-6.67.887-1.79 2.647-2.91 4.601-3.01 1.651-.09 3.368.56 4.798 2.01 1.429-1.45 3.146-2.1 4.796-2.01 1.954.1 3.714 1.22 4.601 3.01.896 1.81.846 4.17-.514 6.67z"/>
+                                </svg>
+                            @endif
+                        </button>
+                    </form>
+                    <span class="count">{{ $post->likes->count() }}</span>
+                </div>
+
+                {{-- Bookmark button --}}
+                <div>
+                    <form method="POST" action="{{ route('bookmarks.toggle', $post->postId) }}" style="display:inline;">
+                        @csrf
+                        <button type="submit" class="action-btn bookmark-btn {{ auth()->user()->bookmarks->contains($post) ? 'bookmarked' : '' }}">
+                            @if(auth()->user()->bookmarks->contains($post))
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M4 4.5C4 3.12 5.119 2 6.5 2h11C18.881 2 20 3.12 20 4.5v18.44l-8-5.71-8 5.71V4.5z"/>
+                                </svg>
+                            @else
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M4 4.5C4 3.12 5.119 2 6.5 2h11C18.881 2 20 3.12 20 4.5v18.44l-8-5.71-8 5.71V4.5zM6.5 4c-.276 0-.5.22-.5.5v14.56l6-4.29 6 4.29V4.5c0-.28-.224-.5-.5-.5h-11z"/>
+                                </svg>
+                            @endif
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {{-- Owner actions (Edit/Delete) --}}
+            @if(auth()->id() === $post->userId)
+                <div class="owner-actions">
+                    <a href="{{ route('posts.edit', $post->postId) }}" class="edit-btn">
+                        ✏️ Edit
+                    </a>
+                    <form method="POST" action="{{ route('posts.destroy', $post->postId) }}" style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="delete-btn" onclick="return confirm('Delete this post?')">
+                            🗑️ Delete
+                        </button>
+                    </form>
+                </div>
+            @endif
         </div>
 
         <div class="reply-form">
