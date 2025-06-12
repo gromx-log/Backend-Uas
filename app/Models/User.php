@@ -57,7 +57,7 @@ class User extends Authenticatable
 
     public function posts()
     {
-        return $this->hasMany(Post::class, 'user_id', 'userId');
+        return $this->hasMany(Post::class, 'userId', 'userId'); // Fixed: should use 'userId' not 'user_id'
     }
     
     public function followers()
@@ -107,13 +107,17 @@ class User extends Authenticatable
 
     public function likes()
     {
-        return $this->hasMany(Like::class, 'user_id', 'userId');
+        return $this->hasMany(likes::class, 'user_id', 'userId'); // Fixed: use the correct model name 'likes'
+    }
+
+    // Add this missing relationship for liked posts
+    public function likedPosts()
+    {
+        return $this->belongsToMany(Post::class, 'likes', 'user_id', 'post_id');
     }
 
     public function getRouteKeyName()
     {
         return 'userId';
     }
-
-
 }

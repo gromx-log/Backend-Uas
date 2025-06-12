@@ -7,64 +7,82 @@ use App\Http\Controllers\FollowsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LikesController;
 use App\Http\Controllers\HomeController;
-
 use App\Http\Controllers\BookmarksController;
+//Digunakan prefix untuk mengelompokkan route yang berhubungan dengan fitur tertentu
+/*
+|--------------------------------------------------------------------------
+| Public Route (Yang Bisa Diakses Tanpa Login)
+|--------------------------------------------------------------------------
+*/
 
-Route::post('/posts/{postId}/bookmark', [BookmarksController::class, 'toggle'])->name('bookmarks.toggle');
-Route::get('/bookmarks', [BookmarksController::class, 'index'])->name('bookmarks.index');
-
-// home
+// Home page redirects
 Route::get('/', [HomeController::class, 'index'])->middleware('auth')->name('home');
 Route::get('/home', [HomeController::class, 'index'])->middleware('auth');
 
-// Guest routes
-Route::middleware('guest')->group(function () {
-    Route::get('login', [AuthController::class, 'showLoginForm'])->name('show.login');
-    Route::post('login', [AuthController::class, 'login'])->name('login.submit');
-
-    Route::get('signup', [AuthController::class, 'showSignupForm'])->name('show.signup');
-    Route::post('signup', [AuthController::class, 'signup'])->name('signup.submit');
-});
-
-// Authenticated routes
-Route::middleware('auth')->group(function () {
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-    
-    // Posts
-    // save a post when posting
-    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
-    // delete a post
-    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
-    // show post form
-    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
-    // Reply to a post
-    Route::post('/posts/{post}/reply', [PostController::class, 'reply'])->name('posts.reply');
-    // show a specific post
-    Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
-    Route::post('/posts/{post}/like', [LikesController::class, 'like'])->name('posts.like');
-    Route::delete('/posts/{post}/like', [LikesController::class, 'unlike'])->name('posts.unlike');
-
-
-     // Follow/Unfollow actions
-    Route::post('/users/{user}/follow', [FollowsController::class, 'follow'])->name('users.follow');
-    Route::delete('/users/{user}/unfollow', [FollowsController::class, 'unfollow'])->name('users.unfollow');
-    // API endpoints for AJAX requests
-    Route::get('/api/users/{user}/follow-status', [FollowsController::class, 'getFollowStatus'])->name('users.follow-status');
-
-    // Profile edit & update
-    Route::get('/profile/edit', [UserController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile', [UserController::class, 'update'])->name('profile.update');
-
-    // Profile show (by username)
-    Route::get('/profile/{userHandle}', [UserController::class, 'show'])->name('profile.show');
-
-    Route::post('/posts/{postId}/bookmark', [BookmarksController::class, 'toggle'])->name('bookmarks.toggle');
-    
-});
-
+// Public profile views (accessible without auth)
+Route::get('/profile/{userHandle}', [UserController::class, 'show'])->name('profile.show');
 Route::get('/users/{userHandle}', [FollowsController::class, 'show'])->name('users.show');
 Route::get('/users/{userHandle}/followers', [FollowsController::class, 'followers'])->name('users.followers');
 Route::get('/users/{userHandle}/following', [FollowsController::class, 'following'])->name('users.following');
 
-Route::post('/follow/{user}', [FollowsController::class, 'follow'])->name('follow');
-Route::post('/unfollow/{user}', [FollowsController::class, 'unfollow'])->name('unfollow');
+/*
+|--------------------------------------------------------------------------
+| Guest Routes (Unauthenticated users only)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('guest')->group(function () {
+    // Autentikasi
+    Route::get('login', [AuthController::class, 'showLoginForm'])->name('show.login');
+    Route::post('login', [AuthController::class, 'login'])->name('login.submit');
+    
+    Route::get('signup', [AuthController::class, 'showSignupForm'])->name('show.signup');
+    Route::post('signup', [AuthController::class, 'signup'])->name('signup.submit');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Authenticated Routes  (Yang Harus Login untuk Akses)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth')->group(function () {
+    
+    // Authentication
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+    
+    // Posts Management
+    Route::prefix('posts')->name('posts.')->group(function () {
+        Route::get('create', [PostController::class, 'create'])->name('create');
+        Route::post('/', [PostController::class, 'store'])->name('store');
+        Route::get('{post}', [PostController::class, 'show'])->name('show');
+        Route::delete('{post}', [PostController::class, 'destroy'])->name('destroy');
+        Route::post('{post}/reply', [PostController::class, 'reply'])->name('reply');
+        Route::post('{post}/like', [LikesController::class, 'like'])->name('like');
+        Route::delete('{post}/like', [LikesController::class, 'unlike'])->name('unlike');
+    });
+    
+    // Bookmarks
+    Route::prefix('bookmarks')->name('bookmarks.')->group(function () {
+        Route::get('/', [BookmarksController::class, 'index'])->name('index');
+        Route::post('posts/{postId}/bookmark', [BookmarksController::class, 'toggle'])->name('toggle');
+    });
+    
+    // Follow System
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::post('{user}/follow', [FollowsController::class, 'follow'])->name('follow');
+        Route::delete('{user}/unfollow', [FollowsController::class, 'unfollow'])->name('unfollow');
+        Route::get('{user}/follow-status', [FollowsController::class, 'getFollowStatus'])->name('follow-status');
+    });
+    
+    // Alternative follow routes (for backward compatibility)
+    Route::post('follow/{user}', [FollowsController::class, 'follow'])->name('follow');
+    Route::post('unfollow/{user}', [FollowsController::class, 'unfollow'])->name('unfollow');
+    
+    // Profile Management
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('edit', [UserController::class, 'edit'])->name('edit');
+        Route::put('/', [UserController::class, 'update'])->name('update');
+    });
+    
+});
