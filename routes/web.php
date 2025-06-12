@@ -45,12 +45,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/posts/{post}/like', [LikesController::class, 'unlike'])->name('posts.unlike');
 
 
-    // Follows
+     // Follow/Unfollow actions
     Route::post('/users/{user}/follow', [FollowsController::class, 'follow'])->name('users.follow');
-    Route::delete('/users/{user}/follow', [FollowsController::class, 'unfollow'])->name('users.unfollow');
-    Route::get('/users/{user}/followers', [FollowsController::class, 'followers'])->name('users.followers');
-    Route::get('/users/{user}/following', [FollowsController::class, 'following'])->name('users.following');
-
+    Route::delete('/users/{user}/unfollow', [FollowsController::class, 'unfollow'])->name('users.unfollow');
+    // API endpoints for AJAX requests
+    Route::get('/api/users/{user}/follow-status', [FollowsController::class, 'getFollowStatus'])->name('users.follow-status');
 
     // Profile edit & update
     Route::get('/profile/edit', [UserController::class, 'edit'])->name('profile.edit');
@@ -62,3 +61,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/posts/{postId}/bookmark', [BookmarksController::class, 'toggle'])->name('bookmarks.toggle');
     
 });
+
+Route::get('/users/{userHandle}', [FollowsController::class, 'show'])->name('users.show');
+Route::get('/users/{userHandle}/followers', [FollowsController::class, 'followers'])->name('users.followers');
+Route::get('/users/{userHandle}/following', [FollowsController::class, 'following'])->name('users.following');
+
+Route::post('/follow/{user}', [FollowsController::class, 'follow'])->name('follow');
+Route::post('/unfollow/{user}', [FollowsController::class, 'unfollow'])->name('unfollow');
