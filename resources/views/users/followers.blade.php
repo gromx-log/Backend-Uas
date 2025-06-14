@@ -27,7 +27,7 @@
                         <a href="{{ route('profile.show', $follower->userHandle) }}" class="text-lg font-semibold text-blue-500 hover:underline">
                             {{ $follower->username }}
                         </a>
-                        <div class="text-gray-500 text-sm">@{{ $follower->userHandle }}</div>
+                        <div class="text-gray-500 text-sm">{{ '@' . $follower->userHandle }}</div>
                         <div class="text-gray-400 text-xs">{{ $follower->bio }}</div>
                     </div>
                 </li>
