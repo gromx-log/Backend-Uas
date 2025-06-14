@@ -120,4 +120,12 @@ class User extends Authenticatable
     {
         return 'userId';
     }
+
+    //added for search feature
+    public function getAuthIdentifierName()
+    {
+        return 'userId'; // Use userId as the identifier
+    }
+
 }
+

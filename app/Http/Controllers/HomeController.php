@@ -9,6 +9,7 @@ use App\Models\Post;
 
 class HomeController extends Controller
 {
+
     public function index()
     {
         $user = Auth::user();
@@ -17,8 +18,7 @@ class HomeController extends Controller
                     ->whereNull('parent_post_id')
                     ->latest('created_at')
                     ->get();
-
-        return view('home.home', compact('posts', 'user'));
+     
 
         return view('home.home', compact('posts', 'user'));
     }

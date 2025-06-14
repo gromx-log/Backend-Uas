@@ -334,7 +334,6 @@
                             @if($post->isLikedBy(auth()->id()))
                                 <svg class="icon" viewBox="0 0 24 24">
                                     <path d="M20.884 13.19c-1.351 2.48-4.001 5.12-8.379 7.67l-.503.3-.504-.3c-4.379-2.55-7.029-5.19-8.382-7.67-1.36-2.5-1.41-4.86-.514-6.67.887-1.79 2.647-2.91 4.601-3.01 1.651-.09 3.368.56 4.798 2.01 1.429-1.45 3.146-2.1 4.796-2.01 1.954.1 3.714 1.22 4.601 3.01.896 1.81.846 4.17-.514 6.67z"/>
-                                </svg>
                             @else
                                 <svg class="icon" viewBox="0 0 24 24">
                                     <path d="M16.697 5.5c-1.222-.06-2.679.51-3.89 2.16l-.805 1.09-.806-1.09C9.984 6.01 8.526 5.44 7.304 5.5c-1.243.07-2.349.78-2.91 1.91-.552 1.12-.633 2.78.479 4.82 1.074 1.97 3.257 4.27 7.129 6.61 3.87-2.34 6.052-4.64 7.126-6.61 1.111-2.04 1.03-3.7.477-4.82-.561-1.13-1.666-1.84-2.908-1.91zm4.187 7.69c-1.351 2.48-4.001 5.12-8.379 7.67l-.503.3-.504-.3c-4.379-2.55-7.029-5.19-8.382-7.67-1.36-2.5-1.41-4.86-.514-6.67.887-1.79 2.647-2.91 4.601-3.01 1.651-.09 3.368.56 4.798 2.01 1.429-1.45 3.146-2.1 4.796-2.01 1.954.1 3.714 1.22 4.601 3.01.896 1.81.846 4.17-.514 6.67z"/>
@@ -367,30 +366,22 @@
             {{-- Owner actions (Edit/Delete) --}}
             @if(auth()->id() === $post->userId)
                 <div class="owner-actions">
-                    <a href="{{ route('posts.edit', $post->postId) }}" class="edit-btn">
+                    {{-- Remove Edit button since posts.edit route does not exist --}}
+                    {{-- <a href="{{ route('posts.edit', $post->postId) }}" class="edit-btn">
                         ✏️ Edit
-                    </a>
+                    </a> --}}
                     <form method="POST" action="{{ route('posts.destroy', $post->postId) }}" style="display:inline;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="delete-btn" onclick="return confirm('Delete this post?')">
-                            🗑️ Delete
+                            Delete
                         </button>
                     </form>
                 </div>
             @endif
         </div>
 
-        <div class="reply-form">
-            <form method="POST" action="{{ route('posts.reply', $post->postId) }}">
-                @csrf
-                <textarea name="content" rows="3" placeholder="Reply to this post..." required></textarea>
-                <br>
-                <button type="submit">Reply</button>
-            </form>
-        </div>
-
-       <div class="replies">
+        <div class="replies">
             @forelse($post->replies as $index => $reply)
                 <div
                     onclick="window.location='{{ route('posts.show', $reply->postId) }}'"
@@ -415,6 +406,55 @@
             @endforelse
         </div>
 
+        <!-- Comment Form -->
+        @auth
+        <div class="bg-gray-900 rounded-2xl shadow-lg p-6 max-w-xl mx-auto mt-6 flex items-start space-x-4">
+            <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center text-xl font-bold">
+                <i class="fas fa-user text-gray-400"></i>
+            </div>
+            <form action="{{ route('posts.reply', $post->postId) }}" method="POST" class="flex-1">
+                @csrf
+                <textarea name="content" rows="2" maxlength="280" class="w-full bg-gray-800 text-white rounded-lg p-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2" placeholder="Write a comment..."></textarea>
+                <div class="flex justify-end">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-full transition-colors">
+                        Comment
+                    </button>
+                </div>
+            </form>
+        </div>
+        @endauth
+
+        <!-- Comments/Replies -->
+        <div class="max-w-xl mx-auto mt-8">
+            <h3 class="text-lg font-bold mb-4 text-white">Comments</h3>
+            @forelse($post->replies as $reply)
+                <div class="bg-gray-900 rounded-xl shadow p-4 mb-4 flex items-start">
+                    <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center text-lg font-bold mr-4">
+                        <span class="text-gray-400">
+                            {{ strtoupper(substr($reply->user->username ?? 'U', 0, 2)) }}
+                        </span>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-1">
+                            <a href="{{ route('profile.show', $reply->user->userHandle) }}" class="font-bold text-blue-400 hover:underline">
+                                {{ $reply->user->username }}
+                            </a>
+                            <span class="text-gray-500 text-sm">{{ '@' . $reply->user->userHandle }}</span>
+                            <span class="text-gray-500 text-sm">·</span>
+                            <span class="text-gray-500 text-sm">{{ $reply->created_at ? $reply->created_at->format('M j, Y H:i') : '' }}</span>
+                            @if(auth()->check() && $reply->userId === auth()->id())
+                                <a href="{{ route('posts.edit', $reply->postId) }}" class="ml-2 text-xs text-blue-400 hover:underline">Edit</a>
+                            @endif
+                        </div>
+                        <div class="text-white text-base">
+                            {{ $reply->content }}
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <p class="text-gray-400">No comments yet.</p>
+            @endforelse
+        </div>
     </div>
 </body>
 </html>
