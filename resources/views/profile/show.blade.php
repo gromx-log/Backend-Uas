@@ -22,7 +22,16 @@
             </div>
         </div>
         <div class="pt-16 px-8 pb-8">
-            @if(auth()->check() && auth()->user()->userId != $user->userId)
+            <!-- Edit Profile Button for owner -->
+            @if(auth()->check() && auth()->user()->userId == $user->userId)
+                <div class="flex justify-end mb-4">
+                    <a href="{{ route('profile.edit') }}">
+                        <button class="bg-gray-200 text-gray-800 px-4 py-2 rounded-full font-bold hover:bg-gray-300 transition border border-gray-300">
+                            Edit Profile
+                        </button>
+                    </a>
+                </div>
+            @elseif(auth()->check() && auth()->user()->userId != $user->userId)
                 <div class="flex justify-end mb-4">
                     @if($isFollowing)
                         <form action="{{ route('users.unfollow', $user) }}" method="POST">
@@ -44,8 +53,10 @@
             @endif
 
             <div class="mb-2">
-                <h1 class="text-2xl font-bold text-gray-900">{{ $user->display_name ?? $user->username }}</h1>
-                <p class="text-gray-500 text-base">{{ '@' . $user->userHandle }}</p>
+                <h1 class="text-2xl font-bold text-gray-900">{{ $user->username }}</h1>
+                <p class="text-gray-500 text-base mt-1">
+                    <span class="font-mono bg-gray-200 px-2 py-1 rounded">{{ '@' . $user->userHandle }}</span>
+                </p>
             </div>
             @if ($user->bio)
                 <div class="mb-4">
@@ -54,12 +65,16 @@
             @endif
             <div class="flex gap-8 mt-4">
                 <div>
-                    <span class="font-bold text-gray-900">{{ $user->following->count() }}</span>
-                    <span class="text-gray-500">Following</span>
+                    <a href="{{ route('users.following', $user->userHandle) }}" class="hover:underline">
+                        <span class="font-bold text-gray-900">{{ $user->following->count() }}</span>
+                        <span class="text-gray-500">Following</span>
+                    </a>
                 </div>
                 <div>
-                    <span class="font-bold text-gray-900">{{ $user->followers->count() }}</span>
-                    <span class="text-gray-500">Followers</span>
+                    <a href="{{ route('users.followers', $user->userHandle) }}" class="hover:underline">
+                        <span class="font-bold text-gray-900">{{ $user->followers->count() }}</span>
+                        <span class="text-gray-500">Followers</span>
+                    </a>
                 </div>
             </div>
         </div>

@@ -30,13 +30,13 @@
             @method('PUT')
 
             <div class="mb-4">
-                <label class="block font-semibold mb-1">Username:</label>
+                <label class="block font-semibold mb-1">Display Name:</label>
                 <input type="text" name="username" value="{{ old('username', $user->username) }}" class="w-full border border-gray-300 rounded px-3 py-2">
             </div>
 
             <div class="mb-4">
-                <label class="block font-semibold mb-1">Display Name:</label>
-                <input type="text" name="display_name" value="{{ old('display_name', $user->display_name) }}" class="w-full border border-gray-300 rounded px-3 py-2">
+                <label class="block font-semibold mb-1">Userhandle (unique):</label>
+                <input type="text" name="userHandle" value="{{ old('userHandle', $user->userHandle) }}" class="w-full border border-gray-300 rounded px-3 py-2">
             </div>
 
             <div class="mb-4">

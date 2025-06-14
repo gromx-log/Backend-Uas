@@ -13,17 +13,11 @@ use App\Http\Controllers\BookmarksController;
 |--------------------------------------------------------------------------
 | Public Route (Yang Bisa Diakses Tanpa Login)
 |--------------------------------------------------------------------------
-*/
+Dipindahkan ke paling bawah*/ 
 
 // Home page redirects
 Route::get('/', [HomeController::class, 'index'])->middleware('auth')->name('home');
 Route::get('/home', [HomeController::class, 'index'])->middleware('auth');
-
-// Public profile views (accessible without auth)
-Route::get('/profile/{userHandle}', [UserController::class, 'show'])->name('profile.show');
-Route::get('/users/{userHandle}', [FollowsController::class, 'show'])->name('users.show');
-Route::get('/users/{userHandle}/followers', [FollowsController::class, 'followers'])->name('users.followers');
-Route::get('/users/{userHandle}/following', [FollowsController::class, 'following'])->name('users.following');
 
 /*
 |--------------------------------------------------------------------------
@@ -79,7 +73,7 @@ Route::middleware('auth')->group(function () {
     Route::post('follow/{user}', [FollowsController::class, 'follow'])->name('follow');
     Route::post('unfollow/{user}', [FollowsController::class, 'unfollow'])->name('unfollow');
     
-    // Profile Management
+    // Profile Management 
     Route::prefix('profile')->name('profile.')->group(function () {
         Route::get('edit', [UserController::class, 'edit'])->name('edit');
         Route::put('/', [UserController::class, 'update'])->name('update');
@@ -90,9 +84,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [UserController::class, 'search'])->name('users');
     });
 
-    
+    // Public profile views (accessible without auth)
+Route::get('/profile/{userHandle}', [UserController::class, 'show'])->name('profile.show');
+Route::get('/users/{userHandle}', [FollowsController::class, 'show'])->name('users.show');
+Route::get('/users/{userHandle}/followers', [FollowsController::class, 'followers'])->name('users.followers');
+Route::get('/users/{userHandle}/following', [FollowsController::class, 'following'])->name('users.following');
+});
 
-    
-    
-}
-);
+
+
+
