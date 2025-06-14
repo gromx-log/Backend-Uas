@@ -38,4 +38,18 @@ class UserController extends Controller
 
     return redirect()->route('profile.show', $user->userHandle)->with('success', 'Profile updated!');
     }
+
+//search features 
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $users = User::where('username', 'like', '%' . $query . '%')
+            ->orWhere('userHandle', 'like', '%' . $query . '%')
+            ->get();
+
+        $user = auth()->user();
+        $posts = []; 
+
+        return view('home.home', compact('users', 'query', 'user', 'posts'));
+    }
 }

@@ -28,9 +28,10 @@
                         <i class="fas fa-hashtag text-xl"></i>
                         <span class="text-xl">Explore</span>
                     </a>
-                    <a href="#" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
-                        <i class="fas fa-bell text-xl"></i>
-                        <span class="text-xl">Notifications</span>
+                    <!-- Changed Notifications to Search -->
+                    <a href="#search-bar" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
+                        <i class="fas fa-search text-xl"></i>
+                        <span class="text-xl">Search</span>
                     </a>
                     <a href="#" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
                         <i class="fas fa-envelope text-xl"></i>
@@ -39,8 +40,6 @@
                     <a href="{{ route('bookmarks.index') }}" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
                         <i class="fas fa-bookmark text-xl"></i>
                         <span class="text-xl">Bookmarks</span>
-                    </a>
-
                     </a>
                     <a href="{{ route('profile.show', $user->userHandle) }}" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
                         <i class="fas fa-user text-xl"></i>
@@ -104,7 +103,7 @@
                                onclick="event.stopPropagation();">
                                 <i class="fas fa-user text-gray-400"></i>
                             </a>
-                            
+                    
                             <!-- Post content -->
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center space-x-2 mb-1">
@@ -192,6 +191,35 @@
         <!-- Right Sidebar -->
         <div class="w-80 p-4">
             <!-- Search Box -->
+            <h2 class="text-xl font-bold mb-4">Search</h2>
+            <form action="{{ route('search.users') }}" method="GET" id="search-bar">
+                <div class="relative bg-gray-800 rounded-full p-3 mb-4 flex items-center">
+                    <input type="text" placeholder="Search by username or userhandle" class="w-full bg-transparent outline-none text-white placeholder-gray-500 pr-12" name="query" value="{{ old('query', $query ?? '') }}">
+                    <button type="submit" class="absolute right-5 text-blue-400 hover:text-blue-600 focus:outline-none">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+
+            @if(isset($users) && isset($query))
+                <div class="mt-6">
+                    <h3 class="text-lg font-semibold mb-2">Search Results for "{{ $query }}"</h3>
+                    @if($users->isEmpty())
+                        <p class="text-gray-500">No users found.</p>
+                    @else
+                        <ul class="space-y-4">
+                            @foreach($users as $userResult)
+                                <li class="bg-gray-800 rounded-lg p-4">
+                                    <a href="{{ route('profile.show', $userResult->userHandle) }}" class="text-lg font-semibold text-blue-500 hover:underline">
+                                        {{ $userResult->username }}
+                                    </a>
+                                    <p class="text-gray-400">{{ $userResult->bio }}</p>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            @endif
             <!-- Trending -->
             <!-- Who to Follow -->
         </div>

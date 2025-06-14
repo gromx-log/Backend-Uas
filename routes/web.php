@@ -84,5 +84,15 @@ Route::middleware('auth')->group(function () {
         Route::get('edit', [UserController::class, 'edit'])->name('edit');
         Route::put('/', [UserController::class, 'update'])->name('update');
     });
+
+    // User Search
+    Route::prefix('search')->name('search.')->group(function () {
+        Route::get('/', [UserController::class, 'search'])->name('users');
+    });
+
     
-});
+
+    
+    
+}
+);
