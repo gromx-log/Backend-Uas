@@ -65,7 +65,12 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        // Only allow editing own comment/reply
+        if ($post->userId !== Auth::id()) {
+            return redirect()->route('posts.show', $post->parent_post_id ?: $post->postId)
+                ->with('error', 'You are not allowed to edit this comment.');
+        }
+        return view('posts.edit', compact('post'));
     }
 
     /**
@@ -73,7 +78,17 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        if ($post->userId !== Auth::id()) {
+            return redirect()->route('posts.create')->with('error', 'You are not allowed to edit this comment.');
+        }
+        $request->validate([
+            'content' => 'required|string|max:280',
+        ]);
+        $post->content = $request->input('content');
+        $post->save();
+
+        // Always redirect to home after editing a comment
+        return redirect()->route('home')->with('success', 'Comment updated!');
     }
 
     /**

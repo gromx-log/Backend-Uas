@@ -6,6 +6,7 @@ use App\Models\Bookmarks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Post;
+use App\Models\User;
 
 class BookmarksController extends Controller
 {
@@ -82,5 +83,13 @@ class BookmarksController extends Controller
     public function destroy(Bookmarks $bookmarks)
     {
         //
+    }
+
+    public function userBookmarks($userHandle)
+    {
+        $user = User::where('userHandle', $userHandle)->firstOrFail();
+        $bookmarkedPosts = $user->bookmarks()->with('user')->latest('bookmarks.created_at')->get();
+
+        return view('bookmarks.user_bookmarks', compact('user', 'bookmarkedPosts'));
     }
 }

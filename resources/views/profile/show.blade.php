@@ -63,7 +63,7 @@
                     <p class="text-gray-800">{{ $user->bio }}</p>
                 </div>
             @endif
-            <div class="flex gap-8 mt-4">
+            <div class="flex gap-8 mt-4 mb-6">
                 <div>
                     <a href="{{ route('users.following', $user->userHandle) }}" class="hover:underline">
                         <span class="font-bold text-gray-900">{{ $user->following->count() }}</span>
@@ -76,7 +76,14 @@
                         <span class="text-gray-500">Followers</span>
                     </a>
                 </div>
+                <div>
+                    <a href="{{ route('users.bookmarks', $user->userHandle) }}" class="hover:underline flex items-center">
+                        <i class="fas fa-bookmark mr-1 text-yellow-400"></i>
+                        <span class="text-gray-500">Bookmarks</span>
+                    </a>
+                </div>
             </div>
+            <!-- Optionally, you can show a preview of bookmarks here or just link to the bookmarks page -->
         </div>
     </div>
 </div>

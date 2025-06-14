@@ -54,9 +54,11 @@ Route::middleware('auth')->group(function () {
         Route::post('{post}/reply', [PostController::class, 'reply'])->name('reply');
         Route::post('{post}/like', [LikesController::class, 'like'])->name('like');
         Route::delete('{post}/like', [LikesController::class, 'unlike'])->name('unlike');
+        Route::get('{post}/edit', [PostController::class, 'edit'])->name('edit');
+        Route::put('{post}', [PostController::class, 'update'])->name('update');
     });
     
-    // Bookmarks
+    // Bookmarks (personal)
     Route::prefix('bookmarks')->name('bookmarks.')->group(function () {
         Route::get('/', [BookmarksController::class, 'index'])->name('index');
         Route::post('posts/{postId}/bookmark', [BookmarksController::class, 'toggle'])->name('toggle');
@@ -85,10 +87,12 @@ Route::middleware('auth')->group(function () {
     });
 
     // Public profile views (accessible without auth)
-Route::get('/profile/{userHandle}', [UserController::class, 'show'])->name('profile.show');
-Route::get('/users/{userHandle}', [FollowsController::class, 'show'])->name('users.show');
-Route::get('/users/{userHandle}/followers', [FollowsController::class, 'followers'])->name('users.followers');
-Route::get('/users/{userHandle}/following', [FollowsController::class, 'following'])->name('users.following');
+    Route::get('/profile/{userHandle}', [UserController::class, 'show'])->name('profile.show');
+    Route::get('/users/{userHandle}', [FollowsController::class, 'show'])->name('users.show');
+    Route::get('/users/{userHandle}/followers', [FollowsController::class, 'followers'])->name('users.followers');
+    Route::get('/users/{userHandle}/following', [FollowsController::class, 'following'])->name('users.following');
+    // Add this for public bookmarks view
+    Route::get('/users/{userHandle}/bookmarks', [BookmarksController::class, 'userBookmarks'])->name('users.bookmarks');
 });
 
 
