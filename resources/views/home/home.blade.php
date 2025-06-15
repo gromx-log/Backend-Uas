@@ -61,7 +61,7 @@
                     <div class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 cursor-pointer">
                         <div class="flex-1">
                             <div class="font-bold">{{$user->username}}</div>
-                            <div class="text-gray-500 text-sm">{{ '@' . $user->userHandle }}</div>
+                            <div class="text-gray-500 text-sm">{{ '@' . ltrim($user->userHandle, '@') }}</div>
                         </div>
                         
                     </div>
@@ -116,7 +116,7 @@
                                     <a href="{{ route('profile.show', $post->user->userHandle ?? 'unknown') }}" 
                                        class="text-gray-500 text-sm hover:underline" 
                                        onclick="event.stopPropagation();">
-                                        {{ '@' . ($post->user->userHandle ?? 'unknown') }}
+                                        {{ '@' . ltrim($post->user->userHandle ?? 'unknown', '@') }}
                                     </a>
                                     <span class="text-gray-500 text-sm">·</span>
                                     <span class="text-gray-500 text-sm">{{ $post->created_at->format('M j') }}</span>

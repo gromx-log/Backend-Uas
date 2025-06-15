@@ -55,7 +55,7 @@
             <div class="mb-2">
                 <h1 class="text-2xl font-bold text-gray-900">{{ $user->username }}</h1>
                 <p class="text-gray-500 text-base mt-1">
-                    <span class="font-mono bg-gray-200 px-2 py-1 rounded">{{ '@' . $user->userHandle }}</span>
+                    <span class="font-mono bg-gray-200 px-2 py-1 rounded">{{ '@' . ltrim($user->userHandle, '@') }}</span>
                 </p>
             </div>
             @if ($user->bio)
