@@ -25,17 +25,9 @@
                         <i class="fas fa-home text-xl"></i>
                         <span class="text-xl">Home</span>
                     </a>
-                    <a href="#" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
-                        <i class="fas fa-hashtag text-xl"></i>
-                        <span class="text-xl">Explore</span>
-                    </a>
                     <a href="#search-bar" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
                         <i class="fas fa-search text-xl"></i>
                         <span class="text-xl">Search</span>
-                    </a>
-                    <a href="#" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
-                        <i class="fas fa-envelope text-xl"></i>
-                        <span class="text-xl">Messages</span>
                     </a>
                     <!-- Bookmarks button for current user -->
                     <a href="{{ route('bookmarks.index') }}" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
