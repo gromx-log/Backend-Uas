@@ -48,7 +48,11 @@ class UserController extends Controller
             ->get();
 
         $user = auth()->user();
-        $posts = []; 
+        // Always show the latest posts on home, even when searching
+        $posts = \App\Models\Post::with('user')
+            ->whereNull('parent_post_id')
+            ->latest('created_at')
+            ->get();
 
         return view('home.home', compact('users', 'query', 'user', 'posts'));
     }

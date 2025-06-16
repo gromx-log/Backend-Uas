@@ -559,7 +559,7 @@
                             <a href="{{ route('profile.show', $reply->user->userHandle) }}" class="comment-username" onclick="event.stopPropagation();">
                                 {{ $reply->user->username ?? 'Unknown' }}
                             </a>
-                            <span class="comment-handle">@{{ $reply->user->userHandle ?? 'unknown' }}</span>
+                            <span class="comment-handle">{{ '@' . ltrim($reply->user->userHandle ?? 'unknown', '@') }}</span>
                             <span class="comment-time">·</span>
                             <span class="comment-time">{{ $reply->created_at->format('M j, Y H:i') }}</span>
                             @if(auth()->check() && $reply->userId === auth()->id())
