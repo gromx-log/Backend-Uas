@@ -93,7 +93,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/users/{userHandle}/following', [FollowsController::class, 'following'])->name('users.following');
     
     // Public bookmarks view
-    Route::get('/users/{userHandle}/bookmarks', [BookmarksController::class, 'userBookmarks'])->name('users.bookmarks');
+    // Route::get('/users/{userHandle}/bookmarks', [BookmarksController::class, 'userBookmarks'])->name('users.bookmarks');
 });
 
 

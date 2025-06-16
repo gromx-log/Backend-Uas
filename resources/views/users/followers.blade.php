@@ -41,9 +41,15 @@
                     <!-- User Info -->
                     <div class="flex-1">
                         <div class="flex items-center gap-2">
-                            <a href="{{ route('users.show', $follower->userHandle) }}" class="font-bold text-gray-900 hover:underline">
-                                {{ $follower->username }}
-                            </a>
+                            @if(auth()->check() && auth()->user()->userId == $follower->userId)
+                                <a href="{{ route('profile.show', $follower->userHandle) }}" class="font-bold text-gray-900 hover:underline">
+                                    {{ $follower->username }}
+                                </a>
+                            @else
+                                <a href="{{ route('users.show', $follower->userHandle) }}" class="font-bold text-gray-900 hover:underline">
+                                    {{ $follower->username }}
+                                </a>
+                            @endif
                         </div>
                         <p class="text-gray-500 text-sm">
                             <span class="font-mono">{{ '@' . ltrim($follower->userHandle, '@') }}</span>
