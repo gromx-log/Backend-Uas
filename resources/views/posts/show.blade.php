@@ -20,7 +20,7 @@
             padding: 20px;
         }
 
-        /* Back button styling - Elvan's feature */
+        /* Back button styling - Enhanced spacing */
         .back-button {
             background: #1d9bf0;
             color: white;
@@ -29,8 +29,10 @@
             border-radius: 20px;
             cursor: pointer;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .back-button:hover {
@@ -285,6 +287,148 @@
             cursor: pointer;
         }
 
+        /* Comment form styling */
+        .comment-form {
+            background: #16181c;
+            border-radius: 16px;
+            padding: 16px;
+            margin: 20px 0;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            background: #71767b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .comment-input-area {
+            flex: 1;
+        }
+
+        .comment-input-area textarea {
+            width: 100%;
+            background: #000;
+            border: 1px solid #2f3336;
+            color: #e7e9ea;
+            padding: 12px;
+            border-radius: 12px;
+            resize: none;
+            font-size: 16px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
+
+        .comment-input-area textarea:focus {
+            border-color: #1d9bf0;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(29, 155, 240, 0.2);
+        }
+
+        .comment-submit-btn {
+            background: #1d9bf0;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .comment-submit-btn:hover {
+            background: #1a8cd8;
+        }
+
+        /* Comments section styling */
+        .comments-section {
+            margin-top: 20px;
+        }
+
+        .comments-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #e7e9ea;
+        }
+
+        .comment-item {
+            background: #16181c;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .comment-item:hover {
+            background: #1a1d21;
+        }
+
+        .comment-avatar-small {
+            width: 32px;
+            height: 32px;
+            background: #71767b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .comment-username {
+            font-weight: bold;
+            color: #e7e9ea;
+        }
+
+        .comment-handle {
+            color: #71767b;
+            font-size: 14px;
+        }
+
+        .comment-time {
+            color: #71767b;
+            font-size: 14px;
+        }
+
+        .comment-text {
+            color: #e7e9ea;
+            line-height: 1.4;
+        }
+
+        .no-comments {
+            color: #71767b;
+            text-align: center;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+
         /* Responsive design */
         @media (max-width: 480px) {
             .container {
@@ -295,10 +439,10 @@
 </head>
 <body>
     <div class="container">
-        {{-- Back Button - Elvan's feature --}}
-        <button onclick="history.back()" class="back-button">
-            ← Back
-        </button>
+        {{-- Back Button - Enhanced to go to home page --}}
+        <a href="{{ route('home') }}" class="back-button">
+            ← Home
+        </a>
 
         <div class="post">
             <div class="user-info" onclick="event.stopPropagation();">
@@ -317,7 +461,7 @@
             <div class="action-buttons">
                 {{-- Reply button --}}
                 <div class="reply-group">
-                    <button class="action-btn reply-btn" onclick="document.querySelector('.reply-form textarea').focus()">
+                    <button class="action-btn reply-btn" onclick="document.querySelector('.comment-form textarea').focus()">
                         <svg class="icon" viewBox="0 0 24 24">
                             <path d="M1.751 10c0-4.42 3.584-8.005 8.005-8.005h4.366c4.49 0 8.129 3.64 8.129 8.129s-3.64 8.129-8.129 8.129H2.084L1.751 10z"/>
                             <path d="M12.5 8.5l-2 2 2 2"/>
@@ -330,10 +474,14 @@
                 <div class="like-group">
                     <form method="POST" action="{{ route('posts.like', $post->postId) }}" style="display:inline;">
                         @csrf
+                        @if($post->isLikedBy(auth()->id()))
+                            @method('DELETE')
+                        @endif
                         <button type="submit" class="action-btn like-btn {{ $post->isLikedBy(auth()->id()) ? 'liked' : '' }}">
                             @if($post->isLikedBy(auth()->id()))
                                 <svg class="icon" viewBox="0 0 24 24">
                                     <path d="M20.884 13.19c-1.351 2.48-4.001 5.12-8.379 7.67l-.503.3-.504-.3c-4.379-2.55-7.029-5.19-8.382-7.67-1.36-2.5-1.41-4.86-.514-6.67.887-1.79 2.647-2.91 4.601-3.01 1.651-.09 3.368.56 4.798 2.01 1.429-1.45 3.146-2.1 4.796-2.01 1.954.1 3.714 1.22 4.601 3.01.896 1.81.846 4.17-.514 6.67z"/>
+                                </svg>
                             @else
                                 <svg class="icon" viewBox="0 0 24 24">
                                     <path d="M16.697 5.5c-1.222-.06-2.679.51-3.89 2.16l-.805 1.09-.806-1.09C9.984 6.01 8.526 5.44 7.304 5.5c-1.243.07-2.349.78-2.91 1.91-.552 1.12-.633 2.78.479 4.82 1.074 1.97 3.257 4.27 7.129 6.61 3.87-2.34 6.052-4.64 7.126-6.61 1.111-2.04 1.03-3.7.477-4.82-.561-1.13-1.666-1.84-2.908-1.91zm4.187 7.69c-1.351 2.48-4.001 5.12-8.379 7.67l-.503.3-.504-.3c-4.379-2.55-7.029-5.19-8.382-7.67-1.36-2.5-1.41-4.86-.514-6.67.887-1.79 2.647-2.91 4.601-3.01 1.651-.09 3.368.56 4.798 2.01 1.429-1.45 3.146-2.1 4.796-2.01 1.954.1 3.714 1.22 4.601 3.01.896 1.81.846 4.17-.514 6.67z"/>
@@ -361,28 +509,14 @@
                         </button>
                     </form>
                 </div>
-            
-                <button class="flex items-center space-x-2 text-gray-500 hover:text-green-400 group" onclick="event.stopPropagation();">
-                    <div class="p-2 rounded-full group-hover:bg-green-900 group-hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-retweet text-sm"></i>
-                    </div>
-                    <span class="text-sm">0</span>
-                </button>
-                <button class="flex items-center space-x-2 text-gray-500 hover:text-blue-400 group" onclick="event.stopPropagation();">
-                    <div class="p-2 rounded-full group-hover:bg-blue-900 group-hover:bg-opacity-20 transition-colors">
-                        <i class="fas fa-share text-sm"></i>
-                    </div>
-                </button>
-                --}}
             </div>
 
             {{-- Owner actions (Edit/Delete) --}}
             @if(auth()->id() === $post->userId)
                 <div class="owner-actions">
-                    {{-- Remove Edit button since posts.edit route does not exist --}}
-                    {{-- <a href="{{ route('posts.edit', $post->postId) }}" class="edit-btn">
+                    <a href="{{ route('posts.edit', $post->postId) }}" class="edit-btn">
                         ✏️ Edit
-                    </a> --}}
+                    </a>
                     <form method="POST" action="{{ route('posts.destroy', $post->postId) }}" style="display:inline;">
                         @csrf
                         @method('DELETE')
@@ -394,78 +528,53 @@
             @endif
         </div>
 
-        <div class="replies">
-            @forelse($post->replies as $index => $reply)
-                <div
-                    onclick="window.location='{{ route('posts.show', $reply->postId) }}'"
-                    class="reply-box {{ $index !== 0 ? 'reply-divider' : '' }}"
-                >
-                    <div class="user-info" onclick="event.stopPropagation();">
-                        <a href="{{ route('profile.show', $reply->user->userHandle) }}">
-                            {{ $reply->user->username ?? 'Unknown' }}
-                        </a>
-                    </div>
-                    <div class="handle-time" onclick="event.stopPropagation();">
-                        <a href="{{ route('profile.show', $reply->user->userHandle) }}">
-                            @ {{ $reply->user->userHandle ?? 'unknown' }}
-                        </a> · {{ $reply->created_at->format('M j, Y H:i') }}
-                    </div>
-                    <div class="post-content">
-                        {{ $reply->content }}
-                    </div>
-                </div>
-            @empty
-                <p style="color:#71767b;">No replies yet. Be the first!</p>
-            @endforelse
-        </div>
-
-        <!-- Comment Form -->
+        {{-- Comment Form --}}
         @auth
-        <div class="bg-gray-900 rounded-2xl shadow-lg p-6 max-w-xl mx-auto mt-6 flex items-start space-x-4">
-            <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center text-xl font-bold">
-                <i class="fas fa-user text-gray-400"></i>
+        <div class="comment-form">
+            <div class="comment-avatar">
+                {{ strtoupper(substr(auth()->user()->username ?? 'U', 0, 1)) }}
             </div>
-            <form action="{{ route('posts.reply', $post->postId) }}" method="POST" class="flex-1">
-                @csrf
-                <textarea name="content" rows="2" maxlength="280" class="w-full bg-gray-800 text-white rounded-lg p-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2" placeholder="Write a comment..."></textarea>
-                <div class="flex justify-end">
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-full transition-colors">
+            <div class="comment-input-area">
+                <form action="{{ route('posts.reply', $post->postId) }}" method="POST">
+                    @csrf
+                    <textarea name="content" rows="3" maxlength="280" placeholder="Write a comment..." required></textarea>
+                    <button type="submit" class="comment-submit-btn">
                         Comment
                     </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
         @endauth
 
-        <!-- Comments/Replies -->
-        <div class="max-w-xl mx-auto mt-8">
-            <h3 class="text-lg font-bold mb-4 text-white">Comments</h3>
+        {{-- Comments Section (Single unified display) --}}
+        <div class="comments-section">
+            <h3 class="comments-title">Comments</h3>
             @forelse($post->replies as $reply)
-                <div class="bg-gray-900 rounded-xl shadow p-4 mb-4 flex items-start">
-                    <div class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center text-lg font-bold mr-4">
-                        <span class="text-gray-400">
-                            {{ strtoupper(substr($reply->user->username ?? 'U', 0, 2)) }}
-                        </span>
+                <div class="comment-item" onclick="window.location='{{ route('posts.show', $reply->postId) }}'">
+                    <div class="comment-avatar-small">
+                        {{ strtoupper(substr($reply->user->username ?? 'U', 0, 1)) }}
                     </div>
-                    <div class="flex-1">
-                        <div class="flex items-center space-x-2 mb-1">
-                            <a href="{{ route('profile.show', $reply->user->userHandle) }}" class="font-bold text-blue-400 hover:underline">
-                                {{ $reply->user->username }}
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <a href="{{ route('profile.show', $reply->user->userHandle) }}" class="comment-username" onclick="event.stopPropagation();">
+                                {{ $reply->user->username ?? 'Unknown' }}
                             </a>
-                            <span class="text-gray-500 text-sm">{{ '@' . $reply->user->userHandle }}</span>
-                            <span class="text-gray-500 text-sm">·</span>
-                            <span class="text-gray-500 text-sm">{{ $reply->created_at ? $reply->created_at->format('M j, Y H:i') : '' }}</span>
+                            <span class="comment-handle">@{{ $reply->user->userHandle ?? 'unknown' }}</span>
+                            <span class="comment-time">·</span>
+                            <span class="comment-time">{{ $reply->created_at->format('M j, Y H:i') }}</span>
                             @if(auth()->check() && $reply->userId === auth()->id())
-                                <a href="{{ route('posts.edit', $reply->postId) }}" class="ml-2 text-xs text-blue-400 hover:underline">Edit</a>
+                                <a href="{{ route('posts.edit', $reply->postId) }}" class="edit-btn" onclick="event.stopPropagation();">Edit</a>
                             @endif
                         </div>
-                        <div class="text-white text-base">
+                        <div class="comment-text">
                             {{ $reply->content }}
                         </div>
                     </div>
                 </div>
             @empty
-                <p class="text-gray-400">No comments yet.</p>
+                <div class="no-comments">
+                    No comments yet. Be the first to comment!
+                </div>
             @endforelse
         </div>
     </div>
