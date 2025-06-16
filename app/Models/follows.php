@@ -9,8 +9,8 @@ class Follows extends Model
     protected $table = 'follows';
     protected $fillable = ['follower_id', 'following_id'];
     
-    // Tidak ada timestamps otomatis, hanya created_at
-    public $timestamps = false;
+    // Enable created_at but disable updated_at
+    const UPDATED_AT = null;
     
     protected $dates = ['created_at'];
 
