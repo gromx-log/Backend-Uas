@@ -37,7 +37,7 @@ class Post extends Model
     // Post ini memiliki banyak balasan (comments)
     public function replies()
     {
-        return $this->hasMany(Post::class, 'parent_post_id', 'postId')->orderBy('created_at', 'asc');
+        return $this->hasMany(Post::class, 'parent_post_id', 'postId')->orderBy('created_at', 'desc');
     }
     
     public function likes()
