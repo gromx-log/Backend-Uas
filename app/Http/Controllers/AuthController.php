@@ -10,16 +10,19 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+    // show login form
     public function showLoginForm ()
     {
         return view('auth.login');
     }
 
+    // show signup form
     public function showSignupForm ()
     {
         return view('auth.signup');
     }
 
+    // handle login
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -38,6 +41,7 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
+    // handle signup
      public function signup(Request $request)
     {
         $credentials = $request->validate([
@@ -54,7 +58,8 @@ class AuthController extends Controller
 
         return redirect()->route('home');
     }
-
+    
+    // handles user log out from session
     public function logout(Request $request)
     {
         Auth::logout();

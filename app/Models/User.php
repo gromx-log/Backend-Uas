@@ -57,7 +57,7 @@ class User extends Authenticatable
 
     public function posts()
     {
-        return $this->hasMany(Post::class, 'userId', 'userId'); // Fixed: should use 'userId' not 'user_id'
+        return $this->hasMany(Post::class, 'userId', 'userId');
     }
     
     public function followers()
@@ -102,12 +102,12 @@ class User extends Authenticatable
     public function bookmarks()
     {
         return $this->belongsToMany(Post::class, 'bookmarks', 'userId', 'postId')
-                    ->withPivot('created_at'); // hanya gunakan created_at
+                    ->withPivot('created_at'); 
     }
 
     public function likes()
     {
-        return $this->hasMany(likes::class, 'user_id', 'userId'); // Fixed: use the correct model name 'likes'
+        return $this->hasMany(likes::class, 'user_id', 'userId'); 
     }
 
     // Add this missing relationship for liked posts
