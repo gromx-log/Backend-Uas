@@ -24,7 +24,7 @@
                         <a href="{{ route('profile.show', $post->user->userHandle) }}" class="font-bold text-blue-400 hover:underline">
                             {{ $post->user->username }}
                         </a>
-                        <span class="text-gray-500 text-sm">{{ '@' . $post->user->userHandle }}</span>
+                        <span class="text-gray-500 text-sm">{{ '@' . ltrim($post->user->userHandle, '@') }}</span>
                         <span class="text-gray-500 text-sm">·</span>
                         <span class="text-gray-500 text-sm">{{ $post->created_at ? $post->created_at->format('M j, Y') : '' }}</span>
                     </div>

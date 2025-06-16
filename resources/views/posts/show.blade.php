@@ -361,6 +361,19 @@
                         </button>
                     </form>
                 </div>
+            
+                <button class="flex items-center space-x-2 text-gray-500 hover:text-green-400 group" onclick="event.stopPropagation();">
+                    <div class="p-2 rounded-full group-hover:bg-green-900 group-hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-retweet text-sm"></i>
+                    </div>
+                    <span class="text-sm">0</span>
+                </button>
+                <button class="flex items-center space-x-2 text-gray-500 hover:text-blue-400 group" onclick="event.stopPropagation();">
+                    <div class="p-2 rounded-full group-hover:bg-blue-900 group-hover:bg-opacity-20 transition-colors">
+                        <i class="fas fa-share text-sm"></i>
+                    </div>
+                </button>
+                --}}
             </div>
 
             {{-- Owner actions (Edit/Delete) --}}

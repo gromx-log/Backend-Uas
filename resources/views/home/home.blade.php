@@ -25,17 +25,9 @@
                         <i class="fas fa-home text-xl"></i>
                         <span class="text-xl">Home</span>
                     </a>
-                    <a href="#" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
-                        <i class="fas fa-hashtag text-xl"></i>
-                        <span class="text-xl">Explore</span>
-                    </a>
                     <a href="#search-bar" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
                         <i class="fas fa-search text-xl"></i>
                         <span class="text-xl">Search</span>
-                    </a>
-                    <a href="#" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
-                        <i class="fas fa-envelope text-xl"></i>
-                        <span class="text-xl">Messages</span>
                     </a>
                     <!-- Bookmarks button for current user -->
                     <a href="{{ route('bookmarks.index') }}" class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 transition-colors">
@@ -61,7 +53,7 @@
                     <div class="flex items-center space-x-3 p-3 rounded-full hover:bg-gray-900 cursor-pointer">
                         <div class="flex-1">
                             <div class="font-bold">{{$user->username}}</div>
-                            <div class="text-gray-500 text-sm">{{ '@' . $user->userHandle }}</div>
+                            <div class="text-gray-500 text-sm">{{ '@' . ltrim($user->userHandle, '@') }}</div>
                         </div>
                         
                     </div>
@@ -116,7 +108,7 @@
                                     <a href="{{ route('profile.show', $post->user->userHandle ?? 'unknown') }}" 
                                        class="text-gray-500 text-sm hover:underline" 
                                        onclick="event.stopPropagation();">
-                                        {{ '@' . ($post->user->userHandle ?? 'unknown') }}
+                                        {{ '@' . ltrim($post->user->userHandle ?? 'unknown', '@') }}
                                     </a>
                                     <span class="text-gray-500 text-sm">·</span>
                                     <span class="text-gray-500 text-sm">{{ $post->created_at->format('M j') }}</span>
@@ -133,13 +125,6 @@
                                             <i class="far fa-comment text-sm"></i>
                                         </div>
                                         <span class="text-sm">{{ $post->commentsCount() }}</span>
-                                    </button>
-                                    <!-- Retweet button -->
-                                    <button class="flex items-center space-x-2 text-gray-500 hover:text-green-400 group" onclick="event.stopPropagation();">
-                                        <div class="p-2 rounded-full group-hover:bg-green-900 group-hover:bg-opacity-20 transition-colors">
-                                            <i class="fas fa-retweet text-sm"></i>
-                                        </div>
-                                        <span class="text-sm">0</span>
                                     </button>
                                     <!-- Like button -->
                                     <div class="flex items-center space-x-2">
@@ -182,12 +167,6 @@
                                         </button>
                                     </form>
                                     @endauth
-                                    <!-- Share button -->
-                                    <button class="flex items-center space-x-2 text-gray-500 hover:text-blue-400 group" onclick="event.stopPropagation();">
-                                        <div class="p-2 rounded-full group-hover:bg-blue-900 group-hover:bg-opacity-20 transition-colors">
-                                            <i class="fas fa-share text-sm"></i>
-                                        </div>
-                                    </button>
                                 </div>
                             </div>
                         </div>
