@@ -4,27 +4,33 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User; // Pastikan model User sudah ada
+use App\Models\User; 
+use App\Models\Post; 
 
 class UserController extends Controller
 {
+    // show specified user's profile page
     public function show($userHandle)
     {
-    $user = User::where('userHandle', $userHandle)
-        ->withCount(['followers', 'following']) // opsional kalau ada relasi followers
-        ->firstOrFail();
-        
-    $isFollowing = auth()->check() && auth()->user()->isFollowing($user->userId);
+        $user = User::where('userHandle', $userHandle)
+            ->withCount(['followers', 'following'])
+            ->firstOrFail();
 
-    return view('profile.show', compact('user', 'isFollowing'));
+        $posts = $user->posts()->latest()->get();
+            
+        $isFollowing = auth()->check() && auth()->user()->isFollowing($user->userId);
+
+        return view('profile.show', compact('user', 'isFollowing','posts'));
     }
 
+    // show currently logged-in user's profile edit page
     public function edit()
     {
         $user = auth()->user();
         return view('profile.edit', compact('user'));
     }
 
+    // update user's profile info 
     public function update(Request $request)
     {
         $user = auth()->user();
@@ -39,7 +45,7 @@ class UserController extends Controller
         return redirect()->route('profile.show', $user->userHandle)->with('success', 'Profile updated!');
     }
 
-//search features 
+    // search a user 
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -49,7 +55,7 @@ class UserController extends Controller
 
         $user = auth()->user();
         // Always show the latest posts on home, even when searching
-        $posts = \App\Models\Post::with('user')
+        $posts = Post::with('user')
             ->whereNull('parent_post_id')
             ->latest('created_at')
             ->get();

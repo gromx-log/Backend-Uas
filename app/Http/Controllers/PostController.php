@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class PostController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display all posts in home.
      */
     public function index()
     {
@@ -24,7 +24,7 @@ class PostController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show post creation form.
      */
     public function create()
     {
@@ -32,7 +32,7 @@ class PostController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created post in storage.
      */
     public function store(Request $request)
     {
@@ -49,11 +49,11 @@ class PostController extends Controller
             'parent_post_id' => $request->parent_post_id,
         ]);
         
-        return redirect()->route('home')->with('success', 'Postingan berhasil dibuat!');
+        return redirect()->route('home')->with('success', 'Post Successfully Posted!');
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified post.
      */
     public function show(Post $post)
     {
@@ -61,25 +61,26 @@ class PostController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified post.
      */
     public function edit(Post $post)
     {
         // Only allow editing own comment/reply
         if ($post->userId !== Auth::id()) {
             return redirect()->route('posts.show', $post->parent_post_id ?: $post->postId)
-                ->with('error', 'You are not allowed to edit this comment.');
+                ->with('error', 'You are not allowed to edit this post.');
         }
+        
         return view('posts.edit', compact('post'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified post in storage.
      */
     public function update(Request $request, Post $post)
     {
         if ($post->userId !== Auth::id()) {
-            return redirect()->route('posts.create')->with('error', 'You are not allowed to edit this comment.');
+            return redirect()->route('posts.create')->with('error', 'You are not allowed to edit this post.');
         }
         $request->validate([
             'content' => 'required|string|max:280',
@@ -88,21 +89,21 @@ class PostController extends Controller
         $post->save();
 
         // Always redirect to home after editing a comment
-        return redirect()->route('home')->with('success', 'Comment updated!');
+        return redirect()->route('home')->with('success', 'Post Edited Successfully!');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified post from storage.
      */
     public function destroy(Post $post)
     {
         if ($post->userId !== Auth::id()) {
-            return redirect()->route('posts.create')->with('error', 'Anda tidak diizinkan menghapus postingan ini.');
+            return redirect()->route('posts.create')->with('error', 'You are not allowed to delete this post.');
         }
     
         $post->delete();
         
-        return redirect()->route('home')->with('success', 'Post berhasil dihapus!');
+        return redirect()->route('home')->with('success', 'Post Deleted Successfully!');
     }
     //Fungsi reply
     public function reply(Request $request, $postId)

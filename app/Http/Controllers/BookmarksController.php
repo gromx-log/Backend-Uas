@@ -11,7 +11,7 @@ use App\Models\User;
 class BookmarksController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of all bookmarked post.
      */
 
      public function index()
@@ -23,19 +23,29 @@ class BookmarksController extends Controller
          return view('bookmarks.index', compact('bookmarks'));
      }
 
-    public function toggle($postId)
-{
-    $user = Auth::user();
-    $post = Post::findOrFail($postId);
+    // bookmark and unbookmark specified post
+     public function toggle($postId)
+     {
+        $user = Auth::user();
+        $post = Post::findOrFail($postId);
 
-    if ($user->bookmarks()->where('bookmarks.postId', $postId)->exists()) {
-        $user->bookmarks()->detach($postId);
-        return back()->with('success', 'Bookmark dihapus.');
-    } else {
-        $user->bookmarks()->attach($postId);
-        return back()->with('success', 'Post berhasil di-bookmark!');
+        if ($user->bookmarks()->where('bookmarks.postId', $postId)->exists()) {
+            $user->bookmarks()->detach($postId);
+            return back()->with('success', 'Unbookmarked Post Successfully.');
+        } else {
+            $user->bookmarks()->attach($postId);
+            return back()->with('success', 'Post Successfully Bookmarked!');
+        }
+     }
+
+    // show all of a specified user's bookmarked posts
+    public function userBookmarks($userHandle)
+    {
+        $user = User::where('userHandle', $userHandle)->firstOrFail();
+        $bookmarkedPosts = $user->bookmarks()->with('user')->latest('bookmarks.created_at')->get();
+
+        return view('bookmarks.user_bookmarks', compact('user', 'bookmarkedPosts'));
     }
-}
 
     /**
      * Show the form for creating a new resource.
@@ -85,11 +95,4 @@ class BookmarksController extends Controller
         //
     }
 
-    public function userBookmarks($userHandle)
-    {
-        $user = User::where('userHandle', $userHandle)->firstOrFail();
-        $bookmarkedPosts = $user->bookmarks()->with('user')->latest('bookmarks.created_at')->get();
-
-        return view('bookmarks.user_bookmarks', compact('user', 'bookmarkedPosts'));
-    }
 }

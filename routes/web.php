@@ -71,7 +71,7 @@ Route::middleware('auth')->group(function () {
         Route::get('{user}/follow-status', [FollowsController::class, 'getFollowStatus'])->name('follow-status');
     });
     
-    // Alternative follow routes (for backward compatibility)
+    // follow routes
     Route::post('follow/{user}', [FollowsController::class, 'follow'])->name('follow');
     Route::post('unfollow/{user}', [FollowsController::class, 'unfollow'])->name('unfollow');
     
@@ -86,12 +86,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [UserController::class, 'search'])->name('users');
     });
 
-    // Public profile views (accessible without auth)
+    // Public profile views
     Route::get('/profile/{userHandle}', [UserController::class, 'show'])->name('profile.show');
     Route::get('/users/{userHandle}', [FollowsController::class, 'show'])->name('users.show');
     Route::get('/users/{userHandle}/followers', [FollowsController::class, 'followers'])->name('users.followers');
     Route::get('/users/{userHandle}/following', [FollowsController::class, 'following'])->name('users.following');
-    // Add this for public bookmarks view
+    
+    // Public bookmarks view
     Route::get('/users/{userHandle}/bookmarks', [BookmarksController::class, 'userBookmarks'])->name('users.bookmarks');
 });
 

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class LikesController extends Controller
 {
+    // like specified post
     public function like(Post $post)
     {
         $userId = auth()->user()->userId;
@@ -24,6 +25,7 @@ class LikesController extends Controller
         return back();
     }
 
+    // unlike specified post
     public function unlike(Post $post)
     {
         $userId = auth()->user()->userId;
