@@ -14,13 +14,13 @@ class FollowsController extends Controller
         $follower = Auth::user();
 
         // Cegah follow diri sendiri
-        if ($follower->id == $user->userId) {
+        if ($follower->userId == $user->userId) {
             return back()->with('error', 'Kamu tidak bisa follow dirimu sendiri.');
         }
-        $userIdToFollow = $user->getKey(); // ini akan ambil 'userId' karena sudah override
+
         // Cek apakah sudah follow
-        if (!$follower->following->contains($userIdToFollow)) {
-            $follower->following()->attach($userIdToFollow);
+        if (!$follower->isFollowing($user->userId)) {
+            $follower->following()->attach($user->userId);
         }
 
         return back();
@@ -29,26 +29,22 @@ class FollowsController extends Controller
     public function unfollow(User $user)
     {
         $follower = Auth::user();
-
-        $follower->following()->detach($user->id);
-
+        $follower->following()->detach($user->userId);
         return back();
     }
-
 
     public function followers($userHandle)
     {
         $user = User::where('userHandle', $userHandle)->firstOrFail();
+        
+        // Fix: Remove the created_at ordering since the column doesn't exist
         $followers = $user->followers()
             ->select('users.userId', 'users.username', 'users.userHandle', 'users.bio')
-            ->withPivot('created_at')
-            ->orderBy('follows.created_at', 'desc')
             ->paginate(20);
 
         // Check if current user is following each follower
         if (auth()->check()) {
-            $currentUserId = auth()->user()->userId;
-            $followers->getCollection()->transform(function ($follower) use ($currentUserId) {
+            $followers->getCollection()->transform(function ($follower) {
                 $follower->is_following = auth()->user()->isFollowing($follower->userId);
                 return $follower;
             });
@@ -60,16 +56,15 @@ class FollowsController extends Controller
     public function following($userHandle)
     {
         $user = User::where('userHandle', $userHandle)->firstOrFail();
+        
+        // Fix: Remove the created_at ordering since the column doesn't exist
         $following = $user->following()
             ->select('users.userId', 'users.username', 'users.userHandle', 'users.bio')
-            ->withPivot('created_at')
-            ->orderBy('follows.created_at', 'desc')
             ->paginate(20);
 
         // Check if current user is following each user
         if (auth()->check()) {
-            $currentUserId = auth()->user()->userId;
-            $following->getCollection()->transform(function ($followedUser) use ($currentUserId) {
+            $following->getCollection()->transform(function ($followedUser) {
                 $followedUser->is_following = auth()->user()->isFollowing($followedUser->userId);
                 return $followedUser;
             });
