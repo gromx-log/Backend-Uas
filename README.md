@@ -73,7 +73,7 @@ DB_PASSWORD=password_anda
 # Jalankan migrasi
 php artisan migrate
 
-# Jalankan seeder (untuk generate user, post, dan reply.
+# Jalankan seeder (untuk generate user, post, dan reply)
 php artisan db:seed
 ```
 
