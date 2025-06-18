@@ -1,3 +1,4 @@
+{{-- Bookmarks are now private only and only accessible by the owner. --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,3 +37,4 @@
 </div>
 </body>
 </html>
+

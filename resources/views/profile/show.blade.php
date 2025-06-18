@@ -80,6 +80,14 @@
                         <span class="text-gray-500">Followers</span>
                     </a>
                 </div>
+                @if(auth()->check() && auth()->user()->userId == $user->userId)
+                <div>
+                    <a href="{{ route('bookmarks.index') }}" class="hover:underline flex items-center">
+                        <i class="fas fa-bookmark mr-1 text-yellow-400"></i>
+                        <span class="text-gray-500">Bookmarks</span>
+                    </a>
+                </div>
+                @endif
             </div>
 
             <!-- User Posts Feed -->

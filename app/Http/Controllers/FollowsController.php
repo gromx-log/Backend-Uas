@@ -75,13 +75,14 @@ class FollowsController extends Controller
 
     public function show($userHandle)
     {
+        // Ganti agar render ke 'profile.show' (bukan 'users.show')
         $user = User::where('userHandle', $userHandle)->firstOrFail();
         $isFollowing = auth()->check() ? auth()->user()->isFollowing($user->userId) : false;
         
         // Get user's posts
         $posts = $user->posts()->with('user')->latest()->paginate(10);
 
-        return view('users.show', compact('user', 'isFollowing', 'posts'));
+        return view('profile.show', compact('user', 'isFollowing', 'posts'));
     }
 
     // API endpoint to get follow status
