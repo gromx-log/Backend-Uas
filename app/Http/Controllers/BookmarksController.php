@@ -38,14 +38,7 @@ class BookmarksController extends Controller
         }
      }
 
-    // show all of a specified user's bookmarked posts
-    public function userBookmarks($userHandle)
-    {
-        $user = User::where('userHandle', $userHandle)->firstOrFail();
-        $bookmarkedPosts = $user->bookmarks()->with('user')->latest('bookmarks.created_at')->get();
-
-        return view('bookmarks.user_bookmarks', compact('user', 'bookmarkedPosts'));
-    }
+    
 
     /**
      * Show the form for creating a new resource.
