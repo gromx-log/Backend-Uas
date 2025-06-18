@@ -37,7 +37,7 @@ class BookmarksController extends Controller
             return back()->with('success', 'Post Successfully Bookmarked!');
         }
      }
-
+  
     /**
      * Show the form for creating a new resource.
      */
