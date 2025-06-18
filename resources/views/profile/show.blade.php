@@ -80,12 +80,6 @@
                         <span class="text-gray-500">Followers</span>
                     </a>
                 </div>
-                <div>
-                    <a href="{{ route('users.bookmarks', $user->userHandle) }}" class="hover:underline flex items-center">
-                        <i class="fas fa-bookmark mr-1 text-yellow-400"></i>
-                        <span class="text-gray-500">Bookmarks</span>
-                    </a>
-                </div>
             </div>
 
             <!-- User Posts Feed -->
