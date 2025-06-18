@@ -39,40 +39,32 @@ class Post extends Model
     {
         return $this->hasMany(Post::class, 'parent_post_id', 'postId')->orderBy('created_at', 'desc');
     }
-    
+
+    // Post ini memiliki banyak likes
     public function likes()
     {
-        return $this->hasMany(likes::class, 'post_id', 'postId'); // Note: using 'likes' model name as in your code
+        return $this->hasMany(likes::class, 'post_id', 'postId');
     }
-
+    // Post ini di like oleh user tertentu
     public function isLikedBy($userId)
     {
         return $this->likes()->where('user_id', $userId)->exists();
     }
 
-    // Add these new methods for counts
-    public function getLikesCountAttribute()
+    // Hitung jumlah likes
+    public function likesCount()
     {
         return $this->likes()->count();
     }
 
+    // Post ini di bookmark oleh user tertentu
     public function bookmarkedBy()
     {
         return $this->belongsToMany(User::class, 'bookmarks', 'postId', 'userId')->withTimestamps();
     }
 
 
-    public function getCommentsCountAttribute()
-    {
-        return $this->replies()->count();
-    }
-
-    // Alternative method names if you prefer
-    public function likesCount()
-    {
-        return $this->likes()->count();
-    }
-
+    // Hitung jumlah komentar
     public function commentsCount()
     {
         return $this->replies()->count();
