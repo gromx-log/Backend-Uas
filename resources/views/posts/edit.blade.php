@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Comment</title>
+    <title>{{ $post->parent_post_id ? 'Edit Comment' : 'Edit Post' }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-black text-white min-h-screen">
@@ -13,10 +13,15 @@
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
-                Back to Post
+                Back to {{ $post->parent_post_id ? 'Post' : 'Home' }}
             </a>
         </div>
-        <h2 class="text-2xl font-bold mb-6 text-white">Edit Comment</h2>
+        
+        {{-- Dynamic title based on whether it's a post or comment --}}
+        <h2 class="text-2xl font-bold mb-6 text-white">
+            {{ $post->parent_post_id ? 'Edit Comment' : 'Edit Post' }}
+        </h2>
+        
         @if ($errors->any())
             <div class="bg-red-700 text-red-200 p-3 rounded mb-4">
                 <ul class="list-disc pl-5">
@@ -26,6 +31,7 @@
                 </ul>
             </div>
         @endif
+        
         <form action="{{ route('posts.update', $post->postId) }}" method="POST" class="flex items-start space-x-4">
             @csrf
             @method('PUT')
@@ -35,11 +41,11 @@
             <div class="flex-1">
                 <textarea name="content" rows="4" maxlength="280"
                     class="w-full bg-gray-800 text-white rounded-lg p-4 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 placeholder-gray-400"
-                    placeholder="Edit your comment...">{{ old('content', $post->content) }}</textarea>
+                    placeholder="{{ $post->parent_post_id ? 'Edit your comment...' : 'Edit your post...' }}">{{ old('content', $post->content) }}</textarea>
                 <div class="flex justify-end space-x-2">
                     <a href="{{ route('posts.show', $post->parent_post_id ?: $post->postId) }}" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full transition-colors">Cancel</a>
                     <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-full transition-colors">
-                        Save
+                        {{ $post->parent_post_id ? 'Save Comment' : 'Save Post' }}
                     </button>
                 </div>
             </div>
